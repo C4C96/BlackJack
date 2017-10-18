@@ -4,55 +4,73 @@ using System.Text;
 
 namespace BlackJackLib
 {
+	/// <summary>
+	/// 表示一叠牌（全52张）的类
+	/// </summary>
     public class Deck
     {
-        private int remains; //牌库中剩余几张牌
         private List<Card> cards = new List<Card>();  
-        public int Remains
+
+		/// <summary>
+		/// 牌库的剩余数量
+		/// </summary>
+        public int RemainCount
         {
             get
             {
-                return remains;
-            }
-            private set
-            {
-                remains = Remains;
+                return cards.Count;
             }
         }
 
-        public void shuffle()  //洗牌+初始化牌库
+		/// <summary>
+		/// 洗牌
+		/// </summary>
+		public void Shuffle()
         {
             cards.Clear();
-            bool[,] ready_card = new bool[4,13];
-            for(int i=0;i<4;i++)
+            bool[,] ready_card = new bool[4,14];
+            for(int i = 0; i < 4; i++)
             {
-                for(int j=0;j<13;j++)
+                for(int j = 0; j < 14; j++)
                 {
-                    ready_card[i][j]=false;
+                    ready_card[i, j]=false;
                 }
             } 
             Random rd = new Random();   //随机发牌
-            int count=0;    
-            Suit fresh_suit=0;
-            Rank fresh_rank=0;
-            while(count<52)
+            int count = 0;    
+            Suit fresh_suit = 0;
+            Rank fresh_rank = 0;
+            while (count < 52)
             {
-                fresh_suit=rd.Next(4);
-                fresh_rank=rd.Next(13);
-                if(ready_card[fresh_suit][fresh_rank]==false)  //没有发过
+                fresh_suit = (Suit) rd.Next(4);
+                fresh_rank = (Rank) (rd.Next(13) + 1);
+                if (ready_card[(int)fresh_suit, (int)fresh_rank] == false)  //没有发过
                 {
-                    cards.Add(new Card(fresh_suit,fresh_rank));
-                    ready_card[fresh_suit][fresh_rank]=true;
+                    cards.Add(new Card(fresh_suit, fresh_rank));
+                    ready_card[(int)fresh_suit, (int)fresh_rank] = true;
                     count++;
                 }
             }
             
         }
 
-        public Card draw()
-        {
-            return cards[0];
-            cards.Remove[0];
-        }
+		/// <summary>
+		/// 取出一张牌，若牌库已空，则返回null
+		/// </summary>
+		/// <param name="seen_blind"></param>
+		/// <returns></returns>
+		public Card Draw(bool seen_blind = true)
+		{
+			if (cards.Count == 0) return null;
+			Card ret = cards[0];
+			ret.Seen_Blind = seen_blind;
+			cards.RemoveAt(0);
+			return ret;
+		}
+
+		public Deck()
+		{
+			Shuffle();
+		}
     }
 }
