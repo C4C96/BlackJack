@@ -13,6 +13,8 @@ namespace BlackJackLib
         protected int balance;	// 钱包余额
         protected List<Card> handCards = new List<Card>();  //玩家的手牌
 
+		public string name = "Gamer";
+
         public int Balance
         {
             get
@@ -22,11 +24,12 @@ namespace BlackJackLib
             set
             {
                 balance = value;
+				Console.WriteLine($"{name}还剩金额：{Balance}");
             }
         }
 
 		/// <summary>
-		/// 当前手牌的总点数
+		/// 当前手牌的总点数，A按最大而不爆计算
 		/// </summary>
 		public int SumPoint
 		{
@@ -51,17 +54,57 @@ namespace BlackJackLib
 		}
 
 		/// <summary>
-		/// 玩家获得一张手牌
+		/// 获得一张手牌
 		/// </summary>
 		/// <param name="card">玩家要获得的牌</param>
 		public void AchieveCard(Card card)   
         {
             handCards.Add(card);
+			
+			Console.WriteLine($"{name}获得了{card}");
+			Console.WriteLine($"{name}当前手牌为{HandCardsToString()}");
         }
+
+		public List<Card> HandCards
+		{
+			get
+			{
+				return handCards;
+			}
+		}
+
+		/// <summary>
+		/// 是否拥有黑杰克
+		/// </summary>
+		public bool HasBlackJack
+		{
+			get
+			{
+				return handCards.Exists(card => card.Rank == Rank.Ace)
+					&& handCards.Exists(card => card.Rank >= Rank.Ten);
+			}
+		}
+
+		/// <summary>
+		/// 新的一局游戏开始时的初始化，初始牌与部分变量，但不改变余额
+		/// </summary>
+		public virtual void Init()
+		{
+			handCards.Clear();
+		}
 
         public Gamer(int balance)
         {
             Balance = balance;
+			Init();
         }
+
+		public string HandCardsToString()
+		{
+			StringBuilder sb = new StringBuilder("{");
+			handCards.ForEach(card => sb.Append(card).Append(" "));
+			sb.Append("}");
+			return sb.ToString();
+		}
     }
 }

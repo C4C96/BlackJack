@@ -59,7 +59,7 @@ namespace BlackJackLib
 		/// </summary>
 		/// <param name="seen_blind"></param>
 		/// <returns></returns>
-		public Card Draw(bool seen_blind = true)
+		public Card DrawACard(bool seen_blind = true)
 		{
 			if (cards.Count == 0) return null;
 			Card ret = cards[0];

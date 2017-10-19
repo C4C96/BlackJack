@@ -31,6 +31,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>
+    </StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BlackJackLib\BlackJackLib.csproj">
-      <Project>{b7b88599-59dc-4058-8e3c-0b59ba883260}</Project>
+      <Project>{63b9343a-0521-4cd3-a3cc-022cebe61e27}</Project>
       <Name>BlackJackLib</Name>
     </ProjectReference>
   </ItemGroup>
