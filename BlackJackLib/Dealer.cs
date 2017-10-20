@@ -10,8 +10,6 @@ namespace BlackJackLib
 	public class Dealer : Gamer
 	{
 		public Dealer(int balance) : base(balance)
-		{
-			name = "庄家";
-		}
+		{}
 	}
 }

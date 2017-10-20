@@ -8,12 +8,12 @@ namespace BlackJackLib
 	/// <summary>
 	/// 表示游戏参与者的类
 	/// </summary>
-    public abstract class Gamer
+    public abstract class Gamer : IFormattable
     {
         protected int balance;	// 钱包余额
         protected List<Card> handCards = new List<Card>();  //玩家的手牌
 
-		public string name = "Gamer";
+		public event EventHandler<Card> AchieveCardEvent;
 
         public int Balance
         {
@@ -24,7 +24,6 @@ namespace BlackJackLib
             set
             {
                 balance = value;
-				Console.WriteLine($"{name}还剩金额：{Balance}");
             }
         }
 
@@ -60,9 +59,8 @@ namespace BlackJackLib
 		public void AchieveCard(Card card)   
         {
             handCards.Add(card);
-			
-			Console.WriteLine($"{name}获得了{card}");
-			Console.WriteLine($"{name}当前手牌为{HandCardsToString()}");
+			if (AchieveCardEvent != null)
+				AchieveCardEvent.Invoke(this, card);
         }
 
 		public List<Card> HandCards
@@ -95,16 +93,23 @@ namespace BlackJackLib
 
         public Gamer(int balance)
         {
-            Balance = balance;
+            this.balance = balance;
 			Init();
         }
 
-		public string HandCardsToString()
+		public string ToString(string format, IFormatProvider formatProvider)
 		{
-			StringBuilder sb = new StringBuilder("{");
-			handCards.ForEach(card => sb.Append(card).Append(" "));
-			sb.Append("}");
-			return sb.ToString();
+			switch (format)
+			{
+				case "c":
+				case "C":
+					StringBuilder sb = new StringBuilder("{");
+					handCards.ForEach(card => sb.Append(card).Append(" "));
+					sb.Append("}");
+					return sb.ToString();
+				default:
+					return ToString();
+			}
 		}
-    }
+	}
 }

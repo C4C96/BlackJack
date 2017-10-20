@@ -12,20 +12,56 @@ namespace BlackJackLib
 		private const int MAX_PLAYER = 6;
 		private const int MIN_PLAYER = 1;
 
-		private Dealer dealer;
-		private List<Player> players;
-		private Deck deck;
+		private IGameInteraction interaction; // 用于从用户获取信息的接口实例
 
-		public Game(int playerNumber = 1)
+		public delegate void AchieveCardHandler(object sender, Gamer gamer, Card card);
+		public delegate void FinishHandler(object sender, Player player, bool? win);
+
+		// 用于反馈的事件
+		public event EventHandler NewTurnStart;
+		public event AchieveCardHandler AchieveCard;
+		public event EventHandler<Gamer> GamerBoom;
+		public event FinishHandler Finish;
+
+		private Dealer dealer;			// 庄家
+		private List<Player> players;	// 闲家
+		private Deck deck;				// 牌堆
+
+		public Dealer Dealer
+		{
+			get => dealer;
+		}
+
+		public IEnumerable<Player> Players
+		{
+			get => players;
+		}
+
+		public Game(IGameInteraction gameInteraction, int playerNumber = 1)
 		{
 			if (playerNumber < MIN_PLAYER || playerNumber > MAX_PLAYER)
 				throw new ArgumentOutOfRangeException("playerNumber", $"playerNumber should between {MIN_PLAYER} and {MAX_PLAYER}");
-
+			
+			// 初始化变量
+			interaction = gameInteraction ?? 
+				throw new ArgumentOutOfRangeException("gameInteraction", "gameInteraction should not be null");
 			dealer = new Dealer(DEFAULT_BALANCE);
 			players = new List<Player>(playerNumber);
 			for (int i = 1; i <= playerNumber; i++)
 				players.Add(new Player(i, DEFAULT_BALANCE));
 			deck = new Deck();
+
+			// 绑定事件监听，将事件往上传递
+			dealer.AchieveCardEvent += (o, card) =>
+			{
+				if (AchieveCard != null)
+					AchieveCard.Invoke(this, dealer, card);
+			};
+			players.ForEach(player => player.AchieveCardEvent += (o, card) => 
+			{
+				if (AchieveCard != null)
+					AchieveCard.Invoke(this, player, card);
+			});
 		}
 
 		/// <summary>
@@ -38,14 +74,13 @@ namespace BlackJackLib
 			dealer.Init();
 			players.ForEach(player => player.Init());
 
-			Console.WriteLine("开始新的一轮");
-			Console.WriteLine("-----------------------------------------------------------");
-
+			if (NewTurnStart != null)
+				NewTurnStart.Invoke(this, null);
+			
 			// 玩家下注
 			foreach (var player in players)
 			{
-				Console.WriteLine($"{player.Id}号玩家清下注：");
-				int bet = int.Parse(Console.ReadLine());
+				int bet = interaction.Bet(player.Id);
 				player.Stake = bet;
 				player.Balance -= bet;
 			}
@@ -57,8 +92,6 @@ namespace BlackJackLib
 			Card dealer_BlindCard = deck.DrawACard(false);
 			dealer.AchieveCard(dealer_SeenCard);
 			dealer.AchieveCard(dealer_BlindCard);
-			
-			Console.WriteLine("-----------------------------------------------------------");
 
 			// 若庄家明T(10,J,Q或K)暗A，则亮牌
 			if (dealer_SeenCard.Rank >= Rank.Ten && dealer_BlindCard.Rank == Rank.Ace)
@@ -69,18 +102,13 @@ namespace BlackJackLib
 				// 询问玩家是否买保险金
 				foreach (var player in players)
 				{
-					Console.WriteLine($"{player.Id}号玩家是否需要购买保险金(Y/N)：");
-					string input = Console.ReadLine();
-					bool wantInsurance = input.Contains("Y") || input.Contains("y");
-					if (wantInsurance)
+					if (interaction.WantInsurance(player.Id))
 						player.BuyInsurance();
 				}
 				//若此时庄家暗T，构成BlackJack，亮牌
 				if (dealer_BlindCard.Rank >= Rank.Ten)
 					dealer_BlindCard.Seen_Blind = true;
 			}
-			
-			Console.WriteLine("-----------------------------------------------------------");
 
 			if (!dealer.HasBlackJack)
 			{
@@ -100,44 +128,37 @@ namespace BlackJackLib
 						else // 买了保险
 							Draw(player); // 按平局处理
 					}
-
-			Console.WriteLine("-----------------------------------------------------------");
 					
 			// 询问剩余玩家是否double
 			foreach (var player in players.Where(player => player.Active))
 			{
-				Console.WriteLine($"{player.Id}号玩家是否需要double(Y/N)：");
-				string input = Console.ReadLine();
-				bool wantToDouble = input.Contains("Y") || input.Contains("y");
-				if (wantToDouble)
+				if (interaction.WantToDouble(player.Id))
 				{
 					player.Double();
 					player.AchieveCard(deck.DrawACard());
 					if (player.SumPoint > 21)
 					{
-						Console.WriteLine($"{player.name}的手牌：{player.HandCardsToString()}，爆了");
+						if (GamerBoom != null)
+							GamerBoom.Invoke(this, player);
 						DealerWin(player);
 					}
 				}
 			}
-			
-			Console.WriteLine("-----------------------------------------------------------");
 
 			// 每轮的选择
 			foreach (var player in players.Where(player => player.Active))
 			{
 				do
 				{
-                   	Console.WriteLine($"{player.Id}号玩家请选择：1.拿牌	2.停牌");
-					int input = int.Parse(Console.ReadLine());
 					// 拿牌
-					if (input == 1)
+					if (interaction.WantToHitMe(player.Id))
 					{
 						player.AchieveCard(deck.DrawACard());
 						// 玩家爆了，则庄家直接赢
 						if (player.SumPoint > 21)
 						{
-							Console.WriteLine($"{player.name}的手牌：{player.HandCardsToString()}，爆了");
+							if (GamerBoom != null)
+								GamerBoom.Invoke(this, player);
 							DealerWin(player);
 						}
 					}
@@ -147,8 +168,6 @@ namespace BlackJackLib
 				} while (player.Active);
 			}
 
-			Console.WriteLine("-----------------------------------------------------------");
-
 			// 庄家亮暗牌
 			// 若还有玩家未结算，则庄家持续拿牌直到点数不小于17
 			dealer_BlindCard.Seen_Blind = true;
@@ -157,13 +176,11 @@ namespace BlackJackLib
 			while (dealer.SumPoint < 17 && dealer.HandCards.Count < 5)    //最多只能摸五张牌
 				dealer.AchieveCard(deck.DrawACard());
 
-			Console.WriteLine("-----------------------------------------------------------");
-
             // 结算
             // 若庄家爆了
             if (dealer.SumPoint > 21)
             {
-                Console.WriteLine($"{dealer.name}的手牌：{dealer.HandCardsToString()}，爆了");
+				GamerBoom(this, dealer);
                 foreach (var player in players.Where(player => !player.Finish))
                     PlayerWin(player); // 玩家赢
             }
@@ -186,8 +203,6 @@ namespace BlackJackLib
 						Draw(player);
 				}
             }
-				
-			Console.WriteLine("-----------------------------------------------------------");
 		}
 
 		/// <summary>
@@ -201,7 +216,8 @@ namespace BlackJackLib
 			dealer.Balance += player.Stake;
 			player.Finish = true;
 
-			Console.WriteLine($"{player.name}输了，还有金额：{player.Balance}，庄家还有金额：{dealer.Balance}");
+			if (Finish != null)
+				Finish.Invoke(this, player, false);
 		}
 
 		/// <summary>
@@ -218,7 +234,8 @@ namespace BlackJackLib
 			player.Balance += (int)(player.Stake * rate);
 			player.Finish = true;
 
-			Console.WriteLine($"{player.name}赢了，还有金额：{player.Balance}，庄家还有金额：{dealer.Balance}");
+			if (Finish != null)
+				Finish.Invoke(this, player, true);
 		}
 
 		/// <summary>
@@ -232,7 +249,8 @@ namespace BlackJackLib
 			player.Balance += player.Stake;
 			player.Finish = true;
 
-			Console.WriteLine($"{player.name}平了，还有金额：{player.Balance}，庄家还有金额：{dealer.Balance}");
+			if (Finish != null)
+				Finish.Invoke(this, player, null);
 		}
 	}
 }

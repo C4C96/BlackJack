@@ -116,7 +116,6 @@ namespace BlackJackLib
 		public Player(int id, int balance) : base(balance)
 		{
 			this.id = id;
-			name = id + "号玩家";
 		}
 	}
 }
