@@ -9,6 +9,8 @@ namespace BlackJackLib
 	public class Game
 	{
 		private const int DEFAULT_BALANCE = 1000;
+		private const int MAX_PLAYER = 6;
+		private const int MIN_PLAYER = 1;
 
 		private Dealer dealer;
 		private List<Player> players;
@@ -16,8 +18,8 @@ namespace BlackJackLib
 
 		public Game(int playerNumber = 1)
 		{
-			if (playerNumber < 1)
-				throw new ArgumentOutOfRangeException("playerNumber", "playerNumber should be a positive integer");
+			if (playerNumber < MIN_PLAYER || playerNumber > MAX_PLAYER)
+				throw new ArgumentOutOfRangeException("playerNumber", $"playerNumber should between {MIN_PLAYER} and {MAX_PLAYER}");
 
 			dealer = new Dealer(DEFAULT_BALANCE);
 			players = new List<Player>(playerNumber);
@@ -126,26 +128,7 @@ namespace BlackJackLib
 			{
 				do
 				{
-                    //判断玩家是否五小龙
-                    if(player.HandCards.Count==5)
-                    {
-                        Console.WriteLine($"{player.name}已经有五张手牌：{player.HandCardsToString()}");
-                        int if_five_dragon = 0;
-                        foreach (var cards in player.HandCards)
-                        {
-                            if_five_dragon += (int)cards.Rank;
-                        }
-
-                        if (if_five_dragon<21)
-                        {
-                            Console.WriteLine($"{player.name}五小龙了！");
-                            PlayerWin(player);
-                        }
-                    }
-
-
-
-					Console.WriteLine($"{player.Id}号玩家请选择：1.拿牌	2.停牌");
+                   	Console.WriteLine($"{player.Id}号玩家请选择：1.拿牌	2.停牌");
 					int input = int.Parse(Console.ReadLine());
 					// 拿牌
 					if (input == 1)
@@ -165,10 +148,13 @@ namespace BlackJackLib
 			}
 
 			Console.WriteLine("-----------------------------------------------------------");
-			
-			// 庄家亮暗牌，并持续拿牌直到点数不小于17
+
+			// 庄家亮暗牌
+			// 若还有玩家未结算，则庄家持续拿牌直到点数不小于17
 			dealer_BlindCard.Seen_Blind = true;
-			while (dealer.SumPoint < 17 && dealer.HandCards.Count<5)    //最多只能摸五张牌
+			if (players.Where(player => !player.Finish).Count() == 0)
+				return;
+			while (dealer.SumPoint < 17 && dealer.HandCards.Count < 5)    //最多只能摸五张牌
 				dealer.AchieveCard(deck.DrawACard());
 
 			Console.WriteLine("-----------------------------------------------------------");
@@ -181,27 +167,24 @@ namespace BlackJackLib
                 foreach (var player in players.Where(player => !player.Finish))
                     PlayerWin(player); // 玩家赢
             }
-            else // 否则先判断五小龙，再比大小
+            else // 否则比大小
             {
-                if (dealer.HandCards.Count == 5 && dealer.SumPoint < 21)  //判断庄家五小龙
+                foreach (var player in players.Where(player => !player.Finish))
                 {
-                    Console.WriteLine($"{dealer.name}五小龙了！玩家全都炸了");
-                    foreach (var player in players)
-                    {
-                        DealerWin(player);
-                    }
-                }
-
-                foreach (var player in players.Where(player => !player.Finish))  //庄家没有五小龙，依次比大小
-                {
-                    if (player.SumPoint > dealer.SumPoint)
-                        PlayerWin(player);
-                    else if (player.SumPoint < dealer.SumPoint)
-                        DealerWin(player);
-                    else
-                        Draw(player);
-                }
-
+					// 优先点数大的赢
+					if (player.SumPoint > dealer.SumPoint)
+						PlayerWin(player);
+					else if (player.SumPoint < dealer.SumPoint)
+						DealerWin(player);
+					// 相同则牌少的赢
+					else if (player.HandCards.Count > dealer.HandCards.Count)
+						DealerWin(player);
+					else if (player.HandCards.Count < dealer.HandCards.Count)
+						PlayerWin(player);
+					// 平局
+					else
+						Draw(player);
+				}
             }
 				
 			Console.WriteLine("-----------------------------------------------------------");
