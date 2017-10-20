@@ -126,6 +126,25 @@ namespace BlackJackLib
 			{
 				do
 				{
+                    //判断玩家是否五小龙
+                    if(player.HandCards.Count==5)
+                    {
+                        Console.WriteLine($"{player.name}已经有五张手牌：{player.HandCardsToString()}");
+                        int if_five_dragon = 0;
+                        foreach (var cards in player.HandCards)
+                        {
+                            if_five_dragon += (int)cards.Rank;
+                        }
+
+                        if (if_five_dragon<21)
+                        {
+                            Console.WriteLine($"{player.name}五小龙了！");
+                            PlayerWin(player);
+                        }
+                    }
+
+
+
 					Console.WriteLine($"{player.Id}号玩家请选择：1.拿牌	2.停牌");
 					int input = int.Parse(Console.ReadLine());
 					// 拿牌
@@ -149,29 +168,41 @@ namespace BlackJackLib
 			
 			// 庄家亮暗牌，并持续拿牌直到点数不小于17
 			dealer_BlindCard.Seen_Blind = true;
-			while (dealer.SumPoint < 17)
+			while (dealer.SumPoint < 17 && dealer.HandCards.Count<5)    //最多只能摸五张牌
 				dealer.AchieveCard(deck.DrawACard());
 
 			Console.WriteLine("-----------------------------------------------------------");
-			
-			// 结算
-			// 若庄家爆了
-			if (dealer.SumPoint > 21)
-			{
-				Console.WriteLine($"{dealer.name}的手牌：{dealer.HandCardsToString()}，爆了");
-				foreach (var player in players.Where(player => !player.Finish))
-					PlayerWin(player); // 玩家赢
-			}
-			else // 否则比大小
-				foreach (var player in players.Where(player => !player.Finish))
-				{
-					if (player.SumPoint > dealer.SumPoint)
-						PlayerWin(player);
-					else if (player.SumPoint < dealer.SumPoint)
-						DealerWin(player);
-					else
-						Draw(player);
-				}
+
+            // 结算
+            // 若庄家爆了
+            if (dealer.SumPoint > 21)
+            {
+                Console.WriteLine($"{dealer.name}的手牌：{dealer.HandCardsToString()}，爆了");
+                foreach (var player in players.Where(player => !player.Finish))
+                    PlayerWin(player); // 玩家赢
+            }
+            else // 否则先判断五小龙，再比大小
+            {
+                if (dealer.HandCards.Count == 5 && dealer.SumPoint < 21)  //判断庄家五小龙
+                {
+                    Console.WriteLine($"{dealer.name}五小龙了！玩家全都炸了");
+                    foreach (var player in players)
+                    {
+                        DealerWin(player);
+                    }
+                }
+
+                foreach (var player in players.Where(player => !player.Finish))  //庄家没有五小龙，依次比大小
+                {
+                    if (player.SumPoint > dealer.SumPoint)
+                        PlayerWin(player);
+                    else if (player.SumPoint < dealer.SumPoint)
+                        DealerWin(player);
+                    else
+                        Draw(player);
+                }
+
+            }
 				
 			Console.WriteLine("-----------------------------------------------------------");
 		}
