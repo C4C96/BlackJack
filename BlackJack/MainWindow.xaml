@@ -5,8 +5,38 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlackJack"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="BlackJack" Height="350" Width="525">
+
     <Grid>
-        
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.Row="0">
+            <MenuItem Width="50" Header="游戏(_G)">
+                <MenuItem Header="新游戏(_N)" >
+                    <MenuItem Header="1人局"/>
+                    <MenuItem Header="2人局"/>
+                    <MenuItem Header="3人局"/>
+                    <MenuItem Header="4人局"/>
+                    <MenuItem Header="5人局"/>
+                    <MenuItem Header="6人局"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="退出(_E)" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Width="50" Header="帮助(_H)" >
+                <MenuItem Header="帮助(_H)" Click="Help_Click"/>
+                <Separator/>
+                <MenuItem Header="关于(_A)..." Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <Canvas Grid.Row="1" Name="GameCanvas">
+
+        </Canvas>
+
     </Grid>
 </Window>

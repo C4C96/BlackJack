@@ -10,7 +10,7 @@
     <Canvas Height="1200" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="2000" >
 
         <Canvas.Background>
-            <ImageBrush ImageSource="D:\project\VSproject\BlackJack\BlackJack\Images\Table\tablebackground.jpg"/>
+            <ImageBrush ImageSource=".\Images\Table\tablebackground.jpg"/>
         </Canvas.Background>
 
         
