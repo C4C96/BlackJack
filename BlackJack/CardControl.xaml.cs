@@ -19,37 +19,8 @@ namespace BlackJack
 	/// <summary>
 	/// Card.xaml 的交互逻辑
 	/// </summary>
-	public partial class Card : UserControl
+	public partial class CardControl : UserControl
 	{
-		private Suit suit;
-		private Rank rank;
-
-		public Suit Suit
-		{
-			get
-			{
-				return suit;
-			}
-			private set
-			{
-				suit = value;
-				RefreshCover();
-			}
-		}
-
-		public Rank Rank
-		{
-			get
-			{
-				return rank;
-			}
-			private set
-			{
-				rank = value;
-				RefreshCover();
-			}
-		}
-
 		/// <summary>
 		/// 是否是翻面状态
 		/// </summary>
@@ -70,7 +41,7 @@ namespace BlackJack
 			CoverImage.Source = new BitmapImage(new Uri($@"./Images/Cards/{(int)Suit}-{(int)Rank}.png", UriKind.Relative));
 		}
 
-		public Card(Suit suit, Rank rank)
+		public CardControl(Suit suit, Rank rank)
 		{
 			InitializeComponent();
 			Suit = suit;

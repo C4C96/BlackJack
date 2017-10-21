@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace BlackJackLib
 {
-    public class Card
+    public class Card : INotifyPropertyChanged
     {
 		private Suit suit;
 		private Rank rank;
 		private bool seen_blind;
+
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public Suit Suit
 		{
@@ -19,6 +22,8 @@ namespace BlackJackLib
 			private set
 			{
 				suit = value;
+				if (PropertyChanged != null)
+					PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Suit"));
 			}
 		}
 
@@ -31,6 +36,8 @@ namespace BlackJackLib
 			private set
 			{
 				rank = value;
+				if (PropertyChanged != null)
+					PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Rank"));
 			}
 		}
 
@@ -46,6 +53,8 @@ namespace BlackJackLib
 			set
 			{
 				seen_blind = value;
+				if (PropertyChanged != null)
+					PropertyChanged.Invoke(this, new PropertyChangedEventArgs("Seen_Blind"));
 			}
 		}
 

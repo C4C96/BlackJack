@@ -54,9 +54,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Rank.cs" />
-    <Compile Include="Suit.cs" />
-    <Page Include="Card.xaml">
+    <Compile Include="CardUC.xaml.cs">
+      <DependentUpon>CardUC.xaml</DependentUpon>
+    </Compile>
+    <Page Include="CardUC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GameUC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -68,8 +73,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Card.xaml.cs">
-      <DependentUpon>Card.xaml</DependentUpon>
+    <Compile Include="GameUC.xaml.cs">
+      <DependentUpon>GameUC.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -158,6 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Back.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlackJackLib\BlackJackLib.csproj">
+      <Project>{63B9343A-0521-4CD3-A3CC-022CEBE61E27}</Project>
+      <Name>BlackJackLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

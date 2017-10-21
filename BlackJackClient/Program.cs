@@ -11,7 +11,7 @@ namespace BlackJackClient
 	{
 		static void Main(string[] args)
 		{
-			Game game = new Game(new Interaction());
+			Game game = new Game(new Interaction(), 2);
 			game.NewTurnStart += OnNewTurnStart;
 			game.AchieveCard += OnAchieveCard;
 			game.GamerBoom += OnGamerBoom;
