@@ -5,8 +5,227 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BlackJack"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+             d:DesignHeight="1200" Width="2000">
+
+    <Canvas Height="1200" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="2000" >
+
+        <Canvas.Background>
+            <ImageBrush ImageSource="D:\project\VSproject\BlackJack\BlackJack\Images\Table\tablebackground.jpg"/>
+        </Canvas.Background>
+
+        
+
+        <Rectangle  
+                Name="playerCard3"
+                StrokeThickness="8"
+                Stroke="White" 
+                Width="200" 
+                Height="154" 
+                Canvas.Left="900" Canvas.Top="800"/>
+
+        <Grid
+                Name="playerDetail3"
+                Width="200"
+                Height="150" 
+                Canvas.Left="900" Canvas.Top="1000">
+        </Grid>
+
+        <Rectangle  
+                Name="playerCard2"
+                StrokeThickness="8"
+                Stroke="White" 
+                Width="200" 
+                Height="154" 
+                Canvas.Left="540" Canvas.Top="750" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="30"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Grid
+                Name="playerDetail2"
+                Width="200"
+                Height="150" 
+                Canvas.Left="430" Canvas.Top="950" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="30"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+        </Grid>
+
+        <Rectangle  
+                Name="playerCard4"
+                StrokeThickness="8"
+                Stroke="White" 
+                Width="200" 
+                Height="154" 
+                Canvas.Right="540" Canvas.Top="750" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-30"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Grid
+                Name="playerDetail4"
+                Width="200"
+                Height="150" 
+                Canvas.Right="430" Canvas.Top="950" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-30"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+        </Grid>
+
+        <Rectangle  
+                Name="playerCard1"
+                StrokeThickness="8"
+                Stroke="White" 
+                Width="200" 
+                Height="154" 
+                Canvas.Left="270" Canvas.Top="500" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="60"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Grid
+                Name="playerDetail1"
+                Width="200"
+                Height="150" 
+                Canvas.Left="80" Canvas.Top="620" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="60"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+        </Grid>
+
+        <Rectangle
+                Name="playerCard5"
+                StrokeThickness="8"
+                Stroke="White" 
+                Width="200" 
+                Height="154" 
+                Canvas.Right="270" Canvas.Top="500" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-60"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+
+        <Grid
+                Name="playerDetail5"
+                Width="200"
+                Height="150" 
+                Canvas.Right="80" Canvas.Top="620" RenderTransformOrigin="0.5,0.5">
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-60"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.RenderTransform>
+        </Grid>
+
+
+        <Rectangle
+            Name="dealerCard"
+            StrokeThickness="8"
+            Stroke="White"
+            Width="500"
+            Height="154"
+            Canvas.Left="750" Canvas.Top="300" >
             
-    </Grid>
+        </Rectangle>
+
+        <Grid 
+            Name="dealerDetail"
+            Width="200"
+            Height="150"
+            Canvas.Left="900" Canvas.Top="50">
+        </Grid>
+
+        <Button
+            Name="double"
+            Width="100"
+            Height="70"
+            Background=""
+            Content="加倍"
+            Foreground="White"
+            FontSize="40"
+            IsEnabled="False"
+            Canvas.Left="700" Canvas.Top="550">
+        </Button>
+
+        <Button
+            Name="stand"
+            Width="100"
+            Height="70"
+            Background=""
+            Content="停牌"
+            Foreground="White"
+            FontSize="40"
+            Canvas.Right="700" Canvas.Top="550">
+        </Button>
+
+        <Button
+            Name="insurance"
+            Width="100"
+            Height="70"
+            Background=""
+            Content="保险"
+            Foreground="White"
+            FontSize="40"
+            IsEnabled="False"
+            Canvas.Left="860" Canvas.Top="550">
+        </Button>
+
+        <Button
+            Name="draw"
+            Width="100"
+            Height="70"
+            Background=""
+            Content="要牌"
+            Foreground="White"
+            FontSize="40"
+            Canvas.Right="860" Canvas.Top="550">
+        </Button>
+
+
+
+    </Canvas>
+
+
+
 </UserControl>
