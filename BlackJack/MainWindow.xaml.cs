@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlackJackLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,9 +23,20 @@ namespace BlackJack
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private Game game;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			StartNewGame(1);
+		}
+
+		private void StartNewGame(int playerNum)
+		{
+			GameUC gameUC = new GameUC();
+			game = new Game(gameUC, playerNum);
+			gameUC.Game = game;
+			GameCanvas.Child = gameUC;
 		}
 
 		private void Exit_Click(object sender, RoutedEventArgs e)

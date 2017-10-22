@@ -5,15 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BlackJack"
              mc:Ignorable="d" 
-             d:DesignHeight="1200" Width="2000">
+             d:DesignHeight="1200" d:DesignWidth="2000">
 
-    <Canvas Height="1200" HorizontalAlignment="Left" Name="canvas1" VerticalAlignment="Top" Width="2000" >
+    <Canvas>
 
         <Canvas.Background>
             <ImageBrush ImageSource=".\Images\Table\tablebackground.jpg"/>
         </Canvas.Background>
-
-        
 
         <Rectangle  
                 Name="playerCard3"
@@ -166,7 +164,7 @@
             Width="500"
             Height="154"
             Canvas.Left="750" Canvas.Top="300" >
-            
+
         </Rectangle>
 
         <Grid 
@@ -180,7 +178,6 @@
             Name="double"
             Width="100"
             Height="70"
-            Background=""
             Content="加倍"
             Foreground="White"
             FontSize="40"
@@ -192,7 +189,6 @@
             Name="stand"
             Width="100"
             Height="70"
-            Background=""
             Content="停牌"
             Foreground="White"
             FontSize="40"
@@ -203,7 +199,6 @@
             Name="insurance"
             Width="100"
             Height="70"
-            Background=""
             Content="保险"
             Foreground="White"
             FontSize="40"
@@ -215,7 +210,6 @@
             Name="draw"
             Width="100"
             Height="70"
-            Background=""
             Content="要牌"
             Foreground="White"
             FontSize="40"

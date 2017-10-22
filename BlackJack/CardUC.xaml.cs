@@ -28,18 +28,29 @@ namespace BlackJack
 		public Card Card
 		{
 			get => card;
+			set
+			{
+				if (card != null)
+					card.PropertyChanged -= Card_PropertyChanged;
+				card = value;
+
+				DataContext = card;
+				RefreshCover();
+				RefreshBack();
+				card.PropertyChanged += Card_PropertyChanged;
+			}
+		}
+
+		public CardUC()
+		{
+			InitializeComponent();
+			Card = new Card(Suit.Club, Rank.Ace, false);
 		}
 
 		public CardUC(Card card)
 		{
 			InitializeComponent();
-			this.card = card;
-			DataContext = card;
-
-			RefreshCover();
-			RefreshBack();
-
-			card.PropertyChanged += Card_PropertyChanged;
+			Card = card;			
 		}
 
 		private void RefreshCover()

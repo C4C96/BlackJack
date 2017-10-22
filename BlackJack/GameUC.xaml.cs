@@ -23,15 +23,30 @@ namespace BlackJack
     {
 		private Game game;
 
-        public GameUC(Game game)
-        {
-            InitializeComponent();
-			this.game = game;
-			game.AchieveCard += Game_AchieveCard;
-			game.NewTurnStart += Game_NewTurnStart;
-			game.GamerBoom += Game_GamerBoom;
-			game.Finish += Game_Finish;
-        }
+		public Game Game
+		{
+			get => game;
+			set
+			{
+				if (game != null)
+				{
+					game.AchieveCard -= Game_AchieveCard;
+					game.NewTurnStart -= Game_NewTurnStart;
+					game.GamerBoom -= Game_GamerBoom;
+					game.Finish -= Game_Finish;
+				}
+				game = value;
+				game.AchieveCard += Game_AchieveCard;
+				game.NewTurnStart += Game_NewTurnStart;
+				game.GamerBoom += Game_GamerBoom;
+				game.Finish += Game_Finish;
+			}
+		}
+
+		public GameUC()
+		{
+			InitializeComponent();
+		}
 
 		private void Game_Finish(object sender, Player player, bool? win)
 		{

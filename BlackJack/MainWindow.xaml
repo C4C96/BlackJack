@@ -22,7 +22,6 @@
                     <MenuItem Header="3人局"/>
                     <MenuItem Header="4人局"/>
                     <MenuItem Header="5人局"/>
-                    <MenuItem Header="6人局"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="退出(_E)" Click="Exit_Click"/>
@@ -34,9 +33,11 @@
             </MenuItem>
         </Menu>
 
-        <Canvas Grid.Row="1" Name="GameCanvas">
-
-        </Canvas>
+        <Grid Grid.Row="1">
+            <Viewbox Name="GameCanvas" Stretch="Fill">
+               
+            </Viewbox>
+        </Grid>
 
     </Grid>
 </Window>

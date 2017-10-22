@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="BlackJack.PlayerUC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BlackJack"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="200">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="154" />
+            <RowDefinition Height="46*" />
+            <RowDefinition Height="150*" />
+        </Grid.RowDefinitions>
+
+        <Grid Name="CardArea"
+              Grid.Row="0">
+            <Rectangle Panel.ZIndex="0"
+                       StrokeThickness="8"
+                       Stroke="White" />   
+        </Grid>
+
+        <Grid Grid.Row="2">
+            
+        </Grid>
+
+    </Grid>
+</UserControl>
