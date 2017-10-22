@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -28,7 +29,12 @@ namespace BlackJack
 		public MainWindow()
 		{
 			InitializeComponent();
-			StartNewGame(1);
+			//StartNewGame(1);
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 		private void StartNewGame(int playerNum)
@@ -36,7 +42,8 @@ namespace BlackJack
 			GameUC gameUC = new GameUC();
 			game = new Game(gameUC, playerNum);
 			gameUC.Game = game;
-			GameCanvas.Child = gameUC;
+			GameCanvas.Children.Clear();
+			GameCanvas.Children.Add(gameUC);
 		}
 
 		private void Exit_Click(object sender, RoutedEventArgs e)

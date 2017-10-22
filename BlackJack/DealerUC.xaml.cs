@@ -1,5 +1,4 @@
-﻿using BlackJackLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,26 +15,14 @@ using System.Windows.Shapes;
 
 namespace BlackJack
 {
-    /// <summary>
-    /// Dealer.xaml 的交互逻辑
-    /// </summary>
-    public partial class DealerUC : UserControl
-    {
-		private Dealer dealer;
-
-		public Dealer Dealer
+	/// <summary>
+	/// DealerUC.xaml 的交互逻辑
+	/// </summary>
+	public partial class DealerUC : UserControl
+	{
+		public DealerUC()
 		{
-			get => dealer;
-			set
-			{
-				dealer = value;
-				DataContext = dealer;
-			}
+			InitializeComponent();
 		}
-
-        public DealerUC()
-        {
-            InitializeComponent();
-        }
-    }
+	}
 }
