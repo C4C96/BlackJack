@@ -25,21 +25,21 @@ namespace BlackJack
 	public partial class MainWindow : Window
 	{
 		private Game game;
-
+		private GameUC gameUC;
 		public MainWindow()
 		{
 			InitializeComponent();
-			//StartNewGame(1);
+			StartNewGame(1);
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-
+			gameUC.Game_AchieveCard(null, null, new Card(Suit.Club, Rank.Four));
 		}
 
 		private void StartNewGame(int playerNum)
 		{
-			GameUC gameUC = new GameUC();
+			gameUC = new GameUC();
 			game = new Game(gameUC, playerNum);
 			gameUC.Game = game;
 			GameCanvas.Children.Clear();

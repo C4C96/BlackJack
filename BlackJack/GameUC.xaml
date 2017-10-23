@@ -7,15 +7,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="1200" d:DesignWidth="2000">
 
-    <Grid HorizontalAlignment="Left" Width="2000" Height="1200">
+    <Grid>
         <Viewbox Stretch="Fill">
-            <Canvas Height="1190" Width="1984">
+            <Canvas Height="1200" Width="2000" Name="Canvas">
                 <Canvas.Background>
                     <ImageBrush ImageSource=".\Images\Table\tablebackground.jpg"/>
                 </Canvas.Background>
 
+                <local:CardUC x:Name="CardTemp" 
+                              Canvas.Left="200" Canvas.Top="150" />
+
                 <Rectangle  
-                    Name="playerCard3"
+                    Name="PlayerCardArea3"
                     StrokeThickness="8"
                     Stroke="White" 
                     Width="200" 
@@ -23,18 +26,16 @@
                     Canvas.Left="900" Canvas.Top="800"/>
 
                 <local:PlayerUC 
-                    x:Name="player3"
+                    x:Name="PlayerUC3"
                     Width="200"
                     Height="150" 
                     Canvas.Left="900" 
-                    Canvas.Top="1000"
-                    FontSize="50"
-                    Content="fuckyou">
-                    
+                    Canvas.Top="1000">
+
                 </local:PlayerUC>
 
                 <Rectangle  
-                    Name="playerCard2"
+                    Name="PlayerCardArea2"
                     StrokeThickness="8"
                     Stroke="White" 
                     Width="200" 
@@ -51,13 +52,11 @@
                 </Rectangle>
 
                 <local:PlayerUC
-                    x:Name="player2"
+                    x:Name="PlayerUC2"
                     Width="200"
                     Height="150" 
                     Canvas.Left="430" 
                     Canvas.Top="950"
-                    Content="fuckyoutoo"
-                    FontSize="50"
                     RenderTransformOrigin="0.5,0.5">
                     <local:PlayerUC.RenderTransform>
                         <TransformGroup>
@@ -70,7 +69,7 @@
                 </local:PlayerUC>
 
                 <Rectangle  
-                    Name="playerCard4"
+                    Name="PlayerCardArea4"
                     StrokeThickness="8"
                     Stroke="White" 
                     Width="200" 
@@ -87,13 +86,11 @@
                 </Rectangle>
 
                 <local:PlayerUC
-                    x:Name="player4"
+                    x:Name="PlayerUC4"
                     Width="200"
                     Height="150" 
                     Canvas.Right="430" 
                     Canvas.Top="950" 
-                    Content="fucku"
-                    FontSize="50"
                     RenderTransformOrigin="0.5,0.5">
                     <local:PlayerUC.RenderTransform>
                         <TransformGroup>
@@ -106,7 +103,7 @@
                 </local:PlayerUC>
 
                 <Rectangle  
-                    Name="playerCard1"
+                    Name="PlayerCardArea1"
                     StrokeThickness="8"
                     Stroke="White" 
                     Width="200" 
@@ -123,13 +120,11 @@
                 </Rectangle>
 
                 <local:PlayerUC
-                    x:Name="player1"
+                    x:Name="PlayerUC1"
                     Width="200"
                     Height="150" 
                     Canvas.Left="80" 
                     Canvas.Top="620" 
-                    Content="fff"
-                    FontSize="50"
                     RenderTransformOrigin="0.5,0.5">
                     <local:PlayerUC.RenderTransform>
                         <TransformGroup>
@@ -142,7 +137,7 @@
                 </local:PlayerUC>
 
                 <Rectangle
-                    Name="playerCard5"
+                    Name="PlayerCardArea5"
                     StrokeThickness="8"
                     Stroke="White" 
                     Width="200" 
@@ -159,13 +154,11 @@
                 </Rectangle>
 
                 <local:PlayerUC
-                    x:Name="player5"
+                    x:Name="PlayerUC5"
                     Width="200"
                     Height="150" 
                     Canvas.Right="80" 
                     Canvas.Top="620" 
-                    Content="ggg"
-                    FontSize="50"
                     RenderTransformOrigin="0.5,0.5">
                     <local:PlayerUC.RenderTransform>
                         <TransformGroup>
@@ -179,24 +172,19 @@
 
 
                 <Rectangle
-                Name="dealerCard"
-                StrokeThickness="8"
-                Stroke="White"
-                Width="500"
-                Height="154"
-                Canvas.Left="750" Canvas.Top="300" >
-
-                </Rectangle>
+                    Name="DealerCardArea"
+                    StrokeThickness="8"
+                    Stroke="White"
+                    Width="500"
+                    Height="154"
+                    Canvas.Left="750" Canvas.Top="300" />
 
                 <local:DealerUC 
-                    x:Name="dealer"
+                    x:Name="DealerUC"
                     Width="200"
                     Height="150"
-                    Content="bigdick"
-                    FontSize="50"
                     Canvas.Left="900" 
-                    Canvas.Top="50">
-                </local:DealerUC>
+                    Canvas.Top="50" />
 
                 <Button
                     Name="double"
@@ -206,8 +194,7 @@
                     Foreground="White"
                     FontSize="40"
                     IsEnabled="False"
-                    Canvas.Left="700" Canvas.Top="550">
-                </Button>
+                    Canvas.Left="700" Canvas.Top="550"/>
 
                 <Button
                     Name="stand"
@@ -216,8 +203,7 @@
                     Content="停牌"
                     Foreground="White"
                     FontSize="40"
-                    Canvas.Right="700" Canvas.Top="550">
-                </Button>
+                    Canvas.Right="700" Canvas.Top="550"/>
 
                 <Button
                     Name="insurance"
@@ -227,8 +213,7 @@
                     Foreground="White"
                     FontSize="40"
                     IsEnabled="False"
-                    Canvas.Left="860" Canvas.Top="550">
-                </Button>
+                    Canvas.Left="860" Canvas.Top="550"/>
 
                 <Button
                     Name="draw"
@@ -237,8 +222,7 @@
                     Content="要牌"
                     Foreground="White"
                     FontSize="40"
-                    Canvas.Right="860" Canvas.Top="550">
-                </Button>
+                    Canvas.Right="860" Canvas.Top="550"/>
 
             </Canvas>
         </Viewbox>

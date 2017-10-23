@@ -8,9 +8,9 @@ namespace BlackJackLib
 {
 	public class Game
 	{
-		private const int DEFAULT_BALANCE = 1000;
-		private const int MAX_PLAYER = 6;
-		private const int MIN_PLAYER = 1;
+		public const int DEFAULT_BALANCE = 1000;
+		public const int MAX_PLAYER = 5;
+		public const int MIN_PLAYER = 1;
 
 		private IGameInteraction interaction; // 用于从用户获取信息的接口实例
 
