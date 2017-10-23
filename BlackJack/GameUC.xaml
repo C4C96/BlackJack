@@ -40,32 +40,17 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Left="540" Canvas.Top="750" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="30"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Rectangle.RenderTransform>
+                    Canvas.Left="540" 
+                    Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC2"
                     Width="200"
                     Height="150" 
-                    Canvas.Left="430" 
-                    Canvas.Top="950"
-                    RenderTransformOrigin="0.5,0.5">
-                    <local:PlayerUC.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="30"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </local:PlayerUC.RenderTransform>
+                    Canvas.Left="540" 
+                    Canvas.Top="1000">
+                    
                 </local:PlayerUC>
 
                 <Rectangle  
@@ -74,32 +59,15 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Right="540" Canvas.Top="750" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-30"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Rectangle.RenderTransform>
+                    Canvas.Right="540" Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC4"
                     Width="200"
                     Height="150" 
-                    Canvas.Right="430" 
-                    Canvas.Top="950" 
-                    RenderTransformOrigin="0.5,0.5">
-                    <local:PlayerUC.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-30"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </local:PlayerUC.RenderTransform>
+                    Canvas.Right="540" 
+                    Canvas.Top="1000">
                 </local:PlayerUC>
 
                 <Rectangle  
@@ -108,32 +76,15 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Left="270" Canvas.Top="500" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="60"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Rectangle.RenderTransform>
+                    Canvas.Left="180" Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC1"
                     Width="200"
                     Height="150" 
-                    Canvas.Left="80" 
-                    Canvas.Top="620" 
-                    RenderTransformOrigin="0.5,0.5">
-                    <local:PlayerUC.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="60"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </local:PlayerUC.RenderTransform>
+                    Canvas.Left="180" 
+                    Canvas.Top="1000">
                 </local:PlayerUC>
 
                 <Rectangle
@@ -142,32 +93,16 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Right="270" Canvas.Top="500" RenderTransformOrigin="0.5,0.5">
-                    <Rectangle.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-60"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Rectangle.RenderTransform>
+                    Canvas.Right="180" 
+                    Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC5"
                     Width="200"
                     Height="150" 
-                    Canvas.Right="80" 
-                    Canvas.Top="620" 
-                    RenderTransformOrigin="0.5,0.5">
-                    <local:PlayerUC.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-60"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </local:PlayerUC.RenderTransform>
+                    Canvas.Right="180" 
+                    Canvas.Top="1000">
                 </local:PlayerUC>
 
 
