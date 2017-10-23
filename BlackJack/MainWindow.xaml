@@ -17,11 +17,11 @@
         <Menu Grid.Row="0">
             <MenuItem Width="50" Header="游戏(_G)">
                 <MenuItem Header="新游戏(_N)" >
-                    <MenuItem Header="1人局"/>
-                    <MenuItem Header="2人局"/>
-                    <MenuItem Header="3人局"/>
-                    <MenuItem Header="4人局"/>
-                    <MenuItem Header="5人局"/>
+                    <MenuItem Name="NewGame_1" Header="1人局"/>
+                    <MenuItem Name="NewGame_2" Header="2人局"/>
+                    <MenuItem Name="NewGame_3" Header="3人局"/>
+                    <MenuItem Name="NewGame_4" Header="4人局"/>
+                    <MenuItem Name="NewGame_5" Header="5人局"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Header="退出(_E)" Click="Exit_Click"/>

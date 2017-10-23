@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlackJackLib;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,31 @@ namespace BlackJack
 	/// </summary>
 	public partial class DealerUC : UserControl
 	{
+		private Dealer dealer;
+
+		public Dealer Dealer
+		{
+			get => dealer;
+			set
+			{
+				if (dealer != null)
+					dealer.PropertyChanged -= Dealer_PropertyChanged;
+				dealer = value;
+				if (dealer != null)
+					dealer.PropertyChanged += Dealer_PropertyChanged;
+			}
+		}
+
+		private void Dealer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case "Balance":
+					Balance.Content = dealer.Balance;
+					break;
+			}
+		}
+
 		public DealerUC()
 		{
 			InitializeComponent();

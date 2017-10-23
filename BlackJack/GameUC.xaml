@@ -27,7 +27,7 @@
 
                 <local:PlayerUC 
                     x:Name="PlayerUC3"
-                    Width="200"
+                    Width="250"
                     Height="150" 
                     Canvas.Left="900" 
                     Canvas.Top="1000">
@@ -46,11 +46,11 @@
 
                 <local:PlayerUC
                     x:Name="PlayerUC2"
-                    Width="200"
+                    Width="250"
                     Height="150" 
                     Canvas.Left="540" 
                     Canvas.Top="1000">
-                    
+
                 </local:PlayerUC>
 
                 <Rectangle  
@@ -59,14 +59,14 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Right="540" Canvas.Top="800">
+                    Canvas.Left="1260" Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC4"
-                    Width="200"
+                    Width="250"
                     Height="150" 
-                    Canvas.Right="540" 
+                    Canvas.Left="1260" 
                     Canvas.Top="1000">
                 </local:PlayerUC>
 
@@ -81,7 +81,7 @@
 
                 <local:PlayerUC
                     x:Name="PlayerUC1"
-                    Width="200"
+                    Width="250"
                     Height="150" 
                     Canvas.Left="180" 
                     Canvas.Top="1000">
@@ -93,15 +93,15 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Right="180" 
+                    Canvas.Left="1620" 
                     Canvas.Top="800">
                 </Rectangle>
 
                 <local:PlayerUC
                     x:Name="PlayerUC5"
-                    Width="200"
+                    Width="250"
                     Height="150" 
-                    Canvas.Right="180" 
+                    Canvas.Left="1620" 
                     Canvas.Top="1000">
                 </local:PlayerUC>
 
@@ -116,10 +116,10 @@
 
                 <local:DealerUC 
                     x:Name="DealerUC"
-                    Width="200"
+                    Width="281"
                     Height="150"
-                    Canvas.Left="900" 
-                    Canvas.Top="50" />
+                    Canvas.Left="859" 
+                    Canvas.Top="38" />
 
                 <Button
                     Name="double"

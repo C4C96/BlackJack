@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.ComponentModel;
 
 namespace BlackJackLib
 {
 	/// <summary>
 	/// 表示游戏参与者的类
 	/// </summary>
-    public abstract class Gamer : IFormattable
+    public abstract class Gamer : IFormattable, INotifyPropertyChanged
     {
         protected int balance;	// 钱包余额
         protected List<Card> handCards = new List<Card>();  //玩家的手牌
 
 		public event EventHandler<Card> AchieveCardEvent;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        public int Balance
+		public int Balance
         {
             get
             {
@@ -24,7 +26,8 @@ namespace BlackJackLib
             set
             {
                 balance = value;
-            }
+				OnPropertyChanged(this, "Balance");
+			}
         }
 
 		/// <summary>
@@ -110,6 +113,12 @@ namespace BlackJackLib
 				default:
 					return ToString();
 			}
+		}
+
+		protected virtual void OnPropertyChanged(Object sender, string propertyName)
+		{
+			if (PropertyChanged != null)
+				PropertyChanged.Invoke(sender, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

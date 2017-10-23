@@ -29,12 +29,17 @@ namespace BlackJack
 		public MainWindow()
 		{
 			InitializeComponent();
+			NewGame_1.Click += (o, e) => StartNewGame(1);
+			NewGame_2.Click += (o, e) => StartNewGame(2);
+			NewGame_3.Click += (o, e) => StartNewGame(3);
+			NewGame_4.Click += (o, e) => StartNewGame(4);
+			NewGame_5.Click += (o, e) => StartNewGame(5);
 			StartNewGame(1);
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			gameUC.Game_AchieveCard(null, null, new Card(Suit.Club, Rank.Four));
+			game.NextTurn();
 		}
 
 		private void StartNewGame(int playerNum)

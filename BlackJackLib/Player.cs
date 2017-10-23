@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace BlackJackLib
@@ -14,7 +15,7 @@ namespace BlackJackLib
         private int stake;		// 当局游戏赌金
         private int? insurance; // 当局保险金，若未买保险，则为null
 		private bool active;	// 是否能继续游戏
-		private bool finish;	// 是否已经结算
+		private bool finish;    // 是否已经结算
 
 		public int Id
 		{
@@ -36,7 +37,8 @@ namespace BlackJackLib
             set
             {
                 stake = value;
-            }
+				base.OnPropertyChanged(this, "Stake");
+			}
         }
 
 		/// <summary>
@@ -51,7 +53,8 @@ namespace BlackJackLib
             set
             {
                 insurance = value;
-            }
+				base.OnPropertyChanged(this, "Insurance");
+			}
         }
 
 		/// <summary>

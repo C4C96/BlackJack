@@ -7,13 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="SpringGreen" Name="dealerGrid">
-        
+
         <Label
-            Name="balance"
             VerticalAlignment="Center"
             Content="庄家余额:"
-            FontSize="30">
-        </Label>
-        
+            FontSize="30" />
+        <Label Name="Balance"
+               VerticalAlignment="Center"
+               Content="----"
+               FontSize="30"
+               Margin="130,0,0,0"/>
+
     </Grid>
 </UserControl>

@@ -27,6 +27,8 @@ namespace BlackJack
 		private Rectangle[] playerCardAreaGroup = new Rectangle[Game.MAX_PLAYER];
 		private PlayerUC[] playerUCGroup = new PlayerUC[Game.MAX_PLAYER];
 
+		private List<CardUC> cardUCs = new List<CardUC>();
+
 		public Game Game
 		{
 			get => game;
@@ -39,11 +41,23 @@ namespace BlackJack
 					game.GamerBoom -= Game_GamerBoom;
 					game.Finish -= Game_Finish;
 				}
+				foreach (var playerUC in playerUCGroup)
+					playerUC.Player = null;
+				DealerUC.Dealer = null;
+				
 				game = value;
-				game.AchieveCard += Game_AchieveCard;
-				game.NewTurnStart += Game_NewTurnStart;
-				game.GamerBoom += Game_GamerBoom;
-				game.Finish += Game_Finish;
+				if (game != null)
+				{
+					game.AchieveCard += Game_AchieveCard;
+					game.NewTurnStart += Game_NewTurnStart;
+					game.GamerBoom += Game_GamerBoom;
+					game.Finish += Game_Finish;
+
+					int i = 0;
+					foreach (var player in game.Players)
+						playerUCGroup[i++].Player = player;
+					DealerUC.Dealer = game.Dealer;
+				}				
 			}
 		}
 
@@ -64,30 +78,37 @@ namespace BlackJack
 
 		private void Game_Finish(object sender, Player player, bool? win)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 
 		private void Game_GamerBoom(object sender, Gamer e)
 		{
-			throw new NotImplementedException();
+			// TODO
 		}
 
 		private void Game_NewTurnStart(object sender, EventArgs e)
 		{
-			throw new NotImplementedException();
+			DoubleAnimation removeAnim = new DoubleAnimation(-CardTemp.ActualWidth, TimeSpan.FromSeconds(1));
+			foreach (var cardUC in cardUCs)
+			{
+				removeAnim.Completed += (o, ev) => Canvas.Children.Remove(cardUC);
+				cardUC.BeginAnimation(Canvas.LeftProperty, removeAnim);
+			}
 		}
 
-		public void Game_AchieveCard(object sender, Gamer gamer, Card card)
+		private void Game_AchieveCard(object sender, Gamer gamer, Card card)
 		{
 			CardUC cardUC = new CardUC();
 			Canvas.Children.Add(cardUC);
+			cardUCs.Add(cardUC);
 			Canvas.SetLeft(cardUC, Canvas.GetLeft(CardTemp));
 			Canvas.SetTop(cardUC, Canvas.GetTop(CardTemp));
 			cardUC.Width = CardTemp.ActualWidth;
 			cardUC.Height = CardTemp.ActualHeight;
 
-			DoubleAnimation xMoveAnim = new DoubleAnimation(Canvas.GetLeft(DealerCardArea), TimeSpan.FromSeconds(1));
-			DoubleAnimation yMoveAnim = new DoubleAnimation(Canvas.GetTop(DealerCardArea), TimeSpan.FromSeconds(1));
+			var position = GetNewCardPos(gamer);
+			DoubleAnimation xMoveAnim = new DoubleAnimation(position.Item1, TimeSpan.FromSeconds(1));
+			DoubleAnimation yMoveAnim = new DoubleAnimation(position.Item2, TimeSpan.FromSeconds(1));
 			yMoveAnim.Completed += (o, e) =>
 			{
 				if (card.Seen_Blind)
@@ -106,38 +127,42 @@ namespace BlackJack
 		private Tuple<Double, Double> GetNewCardPos(Gamer gamer)
 		{
 			int count = gamer.HandCards.Count;
+			Rectangle cardArea;
 			if (gamer is Dealer)
-			{
-				double x = Canvas.GetLeft(DealerCardArea);
-				double y = Canvas.GetTop(DealerCardArea);
-				x += (count - 1) * DealerCardArea.Width / 5.0;
-				return new Tuple<double, double>(x, y);
-			}
+				cardArea = DealerCardArea;	
 			else
 			{
 				int index = (gamer as Player).Id - 1;
-
+				cardArea = playerCardAreaGroup[index];
 			}
+			double x = Canvas.GetLeft(cardArea);
+			double y = Canvas.GetTop(cardArea);
+			x += (count - 1) * (cardArea.Width - CardTemp.ActualWidth) / 4.0;
+			return new Tuple<double, double>(x, y);
 		}
 
 		public int Bet(int playerId)
 		{
-			throw new NotImplementedException();
+			// TODO
+			return 500;
 		}
 
 		public bool WantInsurance(int playerId)
 		{
-			throw new NotImplementedException();
+			// TODO
+			return false;
 		}
 
 		public bool WantToDouble(int playerId)
 		{
-			throw new NotImplementedException();
+			// TODO
+			return false;
 		}
 
 		public bool WantToHitMe(int playerId)
 		{
-			throw new NotImplementedException();
+			// TODO
+			return true;
 		}
 	}
 }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BlackJackLib;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,37 @@ namespace BlackJack
 	/// </summary>
 	public partial class PlayerUC : UserControl
 	{
+		private Player player;
+
+		public Player Player
+		{
+			get => player;
+			set
+			{
+				if (player != null)
+					player.PropertyChanged -= Player_PropertyChanged;
+				player = value;
+				if (player != null)
+					player.PropertyChanged += Player_PropertyChanged;
+			}
+		}
+
+		private void Player_PropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			switch (e.PropertyName)
+			{
+				case "Balance":
+					Balance.Content = player.Balance;
+					break;
+				case "Insurance":
+					Insurance.Content = player.Insurance == null ? "----" : player.Insurance.ToString();
+					break;
+				case "Stake":
+					Stake.Content = player.Stake;
+					break;
+			}
+		}
+
 		public PlayerUC()
 		{
 			InitializeComponent();
