@@ -17,6 +17,8 @@
                 <local:CardUC x:Name="CardTemp" 
                               Canvas.Left="200" Canvas.Top="150" />
 
+                <!-- Players -->
+                
                 <Rectangle  
                     Name="PlayerCardArea3"
                     StrokeThickness="8"
@@ -24,15 +26,12 @@
                     Width="200" 
                     Height="154" 
                     Canvas.Left="900" Canvas.Top="800"/>
-
                 <local:PlayerUC 
                     x:Name="PlayerUC3"
                     Width="250"
                     Height="150" 
                     Canvas.Left="900" 
-                    Canvas.Top="1000">
-
-                </local:PlayerUC>
+                    Canvas.Top="1000"/>
 
                 <Rectangle  
                     Name="PlayerCardArea2"
@@ -41,17 +40,13 @@
                     Width="200" 
                     Height="154" 
                     Canvas.Left="540" 
-                    Canvas.Top="800">
-                </Rectangle>
-
+                    Canvas.Top="800" />
                 <local:PlayerUC
                     x:Name="PlayerUC2"
                     Width="250"
                     Height="150" 
                     Canvas.Left="540" 
-                    Canvas.Top="1000">
-
-                </local:PlayerUC>
+                    Canvas.Top="1000" />
 
                 <Rectangle  
                     Name="PlayerCardArea4"
@@ -59,16 +54,13 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Left="1260" Canvas.Top="800">
-                </Rectangle>
-
+                    Canvas.Left="1260" Canvas.Top="800" />
                 <local:PlayerUC
                     x:Name="PlayerUC4"
                     Width="250"
                     Height="150" 
                     Canvas.Left="1260" 
-                    Canvas.Top="1000">
-                </local:PlayerUC>
+                    Canvas.Top="1000" />
 
                 <Rectangle  
                     Name="PlayerCardArea1"
@@ -76,16 +68,13 @@
                     Stroke="White" 
                     Width="200" 
                     Height="154" 
-                    Canvas.Left="180" Canvas.Top="800">
-                </Rectangle>
-
+                    Canvas.Left="180" Canvas.Top="800" />
                 <local:PlayerUC
                     x:Name="PlayerUC1"
                     Width="250"
                     Height="150" 
                     Canvas.Left="180" 
-                    Canvas.Top="1000">
-                </local:PlayerUC>
+                    Canvas.Top="1000" />
 
                 <Rectangle
                     Name="PlayerCardArea5"
@@ -94,17 +83,15 @@
                     Width="200" 
                     Height="154" 
                     Canvas.Left="1620" 
-                    Canvas.Top="800">
-                </Rectangle>
-
+                    Canvas.Top="800" />
                 <local:PlayerUC
                     x:Name="PlayerUC5"
                     Width="250"
                     Height="150" 
                     Canvas.Left="1620" 
-                    Canvas.Top="1000">
-                </local:PlayerUC>
+                    Canvas.Top="1000" />
 
+                <!-- Dealer -->
 
                 <Rectangle
                     Name="DealerCardArea"
@@ -113,7 +100,6 @@
                     Width="500"
                     Height="154"
                     Canvas.Left="750" Canvas.Top="300" />
-
                 <local:DealerUC 
                     x:Name="DealerUC"
                     Width="281"
@@ -121,43 +107,79 @@
                     Canvas.Left="859" 
                     Canvas.Top="38" />
 
-                <Button
-                    Name="double"
-                    Width="100"
-                    Height="70"
-                    Content="加倍"
-                    Foreground="White"
-                    FontSize="40"
-                    IsEnabled="False"
-                    Canvas.Left="700" Canvas.Top="550"/>
+                <!-- Buttons -->
 
-                <Button
-                    Name="stand"
-                    Width="100"
-                    Height="70"
-                    Content="停牌"
-                    Foreground="White"
-                    FontSize="40"
-                    Canvas.Right="700" Canvas.Top="550"/>
+                <Button Name="NewTurnButton"
+                        Width="300"
+                        Height="70"
+                        Content="开始新的一局"
+                        FontSize="40" 
+                        Canvas.Left="850" Canvas.Top="586"
+                        Click="NewTurnButton_Click"/>
 
-                <Button
-                    Name="insurance"
-                    Width="100"
-                    Height="70"
-                    Content="保险"
-                    Foreground="White"
-                    FontSize="40"
-                    IsEnabled="False"
-                    Canvas.Left="860" Canvas.Top="550"/>
+                <Grid Name="DoubleGrid" Visibility="Collapsed"
+                      Canvas.Left="750" Canvas.Top="550">
+                    <Button
+                        Name="DoubleButton"
+                        Width="150"
+                        Height="70"
+                        Content="加倍"
+                        FontSize="40" />
+                    <Button
+                        Name="DontDoubleButton"
+                        Width="150"
+                        Height="70"
+                        Content="不加倍"
+                        FontSize="40" 
+                        Margin="348,0,-348,0"/>
+                </Grid>
 
-                <Button
-                    Name="draw"
-                    Width="100"
-                    Height="70"
-                    Content="要牌"
-                    Foreground="White"
-                    FontSize="40"
-                    Canvas.Right="860" Canvas.Top="550"/>
+                <Grid Name="BetGrid" Visibility="Collapsed" 
+                      Canvas.Left="819" Canvas.Top="586">
+                    <TextBox Name="BetTextBox" 
+                             Height="70" Width="141" 
+                             FontSize="40"/>
+                    <Button Name="BetButton" 
+                            Width="100"
+                            Height="70"
+                            Content="下注"
+                            FontSize="40" 
+                            Margin="186,0,-145,0" />
+                </Grid>
+
+                <Grid Name="InsuranceGrid" Visibility="Collapsed"
+                      Canvas.Left="750" Canvas.Top="550">
+                    <Button
+                        Name="InsuranceButton"
+                        Width="150"
+                        Height="70"
+                        Content="买保险"
+                        FontSize="40" />
+                    <Button
+                        Name="DontInsuranceButton"
+                        Width="150"
+                        Height="70"
+                        Content="不买"
+                        FontSize="40" 
+                        Margin="348,0,-348,0"/>
+                </Grid>
+
+                <Grid Name="HitMeGrid" Visibility="Collapsed"
+                      Canvas.Left="750" Canvas.Top="550">
+                    <Button
+                        Name="HitMeButton"
+                        Width="150"
+                        Height="70"
+                        Content="要牌"
+                        FontSize="40" />
+                    <Button
+                        Name="StandButton"
+                        Width="150"
+                        Height="70"
+                        Content="停牌"
+                        FontSize="40" 
+                        Margin="348,0,-348,0"/>
+                </Grid>
 
             </Canvas>
         </Viewbox>

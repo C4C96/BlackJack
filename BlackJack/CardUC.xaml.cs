@@ -25,6 +25,8 @@ namespace BlackJack
 	{
 		private Card card;
 
+		private bool isRotating;
+
 		public Card Card
 		{
 			get => card;
@@ -39,6 +41,11 @@ namespace BlackJack
 				RefreshBack();
 				card.PropertyChanged += Card_PropertyChanged;
 			}
+		}
+
+		public bool IsRotating
+		{
+			get => isRotating;
 		}
 
 		public CardUC()
@@ -83,6 +90,7 @@ namespace BlackJack
 		/// <param name="seen_blind">true表示翻到正面，false表示翻到反面</param>
 		private void ReverseCard()
 		{
+			isRotating = true;
 			DoubleAnimation toZeroAnim = new DoubleAnimation(0.0, TimeSpan.FromSeconds(0.75));
 			DoubleAnimation toOrignalAnim = new DoubleAnimation(Width, TimeSpan.FromSeconds(0.75));
 			bool tmp = true;
@@ -94,6 +102,7 @@ namespace BlackJack
 				CoverImage.BeginAnimation(WidthProperty, toOrignalAnim, HandoffBehavior.Compose);
 				BackImage.BeginAnimation(WidthProperty, toOrignalAnim, HandoffBehavior.Compose);
 			};
+			toOrignalAnim.Completed += (o, e) => isRotating = false;
 			CoverImage.Width = BackImage.Width = Width;
 			CoverImage.BeginAnimation(WidthProperty, toZeroAnim, HandoffBehavior.Compose);
 			BackImage.BeginAnimation(WidthProperty, toZeroAnim, HandoffBehavior.Compose);

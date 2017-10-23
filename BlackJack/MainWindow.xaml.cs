@@ -37,11 +37,6 @@ namespace BlackJack
 			StartNewGame(1);
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			game.NextTurnAsync().Wait();
-		}
-
 		private void StartNewGame(int playerNum)
 		{
 			gameUC = new GameUC();

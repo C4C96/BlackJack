@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -78,7 +79,7 @@ namespace BlackJack
 
 		private void Game_Finish(object sender, Player player, bool? win)
 		{
-			// TODO
+			NewTurnButton.Visibility = Visibility.Visible;
 		}
 
 		private void Game_GamerBoom(object sender, Gamer e)
@@ -96,8 +97,10 @@ namespace BlackJack
 			}
 		}
 
-		private void Game_AchieveCard(object sender, Gamer gamer, Card card)
+		private async void Game_AchieveCard(object sender, Gamer gamer, Card card)
 		{
+			bool completed = false;
+
 			CardUC cardUC = new CardUC();
 			Canvas.Children.Add(cardUC);
 			cardUCs.Add(cardUC);
@@ -119,9 +122,11 @@ namespace BlackJack
 				}
 				else
 					cardUC.Card = card;
+				completed = true;
 			};
 			cardUC.BeginAnimation(Canvas.LeftProperty, xMoveAnim);
 			cardUC.BeginAnimation(Canvas.TopProperty, yMoveAnim);
+			await Task.Factory.StartNew(() => { while (!completed || cardUC.IsRotating) ; });
 		}
 
 		private Tuple<Double, Double> GetNewCardPos(Gamer gamer)
@@ -143,26 +148,88 @@ namespace BlackJack
 
 		public async Task<int> Bet(int playerId)
 		{
-			// TODO
-			return 500;
+			int? result = null;
+			playerUCGroup[playerId - 1].HighLight = true;
+			BetGrid.Visibility = Visibility.Visible;			
+			RoutedEventHandler handler = (o, e) => 
+			{
+				int input = 0;
+				try
+				{
+					input = int.Parse(BetTextBox.Text);
+				}
+				catch
+				{
+					BetTextBox.Text = "";
+				}
+				if (input > 0)
+					result = input;
+				else
+					BetTextBox.Text = "";
+			};
+			BetButton.Click += handler;
+			await Task.Factory.StartNew(() => { while (result == null) ; });
+			BetButton.Click -= handler;
+			BetGrid.Visibility = Visibility.Collapsed;
+			playerUCGroup[playerId - 1].HighLight = false;
+			return result.Value;
 		}
 
 		public async Task<bool> WantInsurance(int playerId)
 		{
-			// TODO
-			return false;
+			bool? result = null;
+			playerUCGroup[playerId - 1].HighLight = true;
+			InsuranceGrid.Visibility = Visibility.Visible;
+			RoutedEventHandler positiveHandler = (o, e) => result = true;
+			RoutedEventHandler negativeHandler = (o, e) => result = false;
+			InsuranceButton.Click += positiveHandler;
+			DontInsuranceButton.Click += negativeHandler;
+			await Task.Factory.StartNew(() => { while (result == null) ; });
+			InsuranceButton.Click -= positiveHandler;
+			DontInsuranceButton.Click -= negativeHandler;
+			InsuranceGrid.Visibility = Visibility.Collapsed;
+			playerUCGroup[playerId - 1].HighLight = false;
+			return result.Value;
 		}
 
 		public async Task<bool> WantToDouble(int playerId)
 		{
-			// TODO
-			return false;
+			bool? result = null;
+			playerUCGroup[playerId - 1].HighLight = true;
+			DoubleGrid.Visibility = Visibility.Visible;
+			RoutedEventHandler positiveHandler = (o, e) => result = true;
+			RoutedEventHandler negativeHandler = (o, e) => result = false;
+			DoubleButton.Click += positiveHandler;
+			DontDoubleButton.Click += negativeHandler;
+			await Task.Factory.StartNew(() => { while (result == null) ; });
+			DoubleButton.Click -= positiveHandler;
+			DontDoubleButton.Click -= negativeHandler;
+			DoubleGrid.Visibility = Visibility.Collapsed;
+			playerUCGroup[playerId - 1].HighLight = false;
+			return result.Value;
 		}
 
 		public async Task<bool> WantToHitMe(int playerId)
 		{
-			// TODO
-			return true;
+			bool? result = null;
+			playerUCGroup[playerId - 1].HighLight = true;
+			HitMeGrid.Visibility = Visibility.Visible;
+			RoutedEventHandler positiveHandler = (o, e) => result = true;
+			RoutedEventHandler negativeHandler = (o, e) => result = false;
+			HitMeButton.Click += positiveHandler;
+			StandButton.Click += negativeHandler;
+			await Task.Factory.StartNew(() => { while (result == null) ; });
+			HitMeButton.Click -= positiveHandler;
+			StandButton.Click -= negativeHandler;
+			HitMeGrid.Visibility = Visibility.Collapsed;
+			playerUCGroup[playerId - 1].HighLight = false;
+			return result.Value;
+		}
+
+		private void NewTurnButton_Click(object sender, RoutedEventArgs e)
+		{
+			game.NextTurnAsync();
+			NewTurnButton.Visibility = Visibility.Collapsed;
 		}
 	}
 }

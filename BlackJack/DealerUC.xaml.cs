@@ -32,7 +32,10 @@ namespace BlackJack
 					dealer.PropertyChanged -= Dealer_PropertyChanged;
 				dealer = value;
 				if (dealer != null)
+				{
 					dealer.PropertyChanged += Dealer_PropertyChanged;
+					Balance.Content = dealer.Balance;
+				}
 			}
 		}
 

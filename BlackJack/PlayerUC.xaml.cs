@@ -24,6 +24,8 @@ namespace BlackJack
 	{
 		private Player player;
 
+		private bool highLight;
+
 		public Player Player
 		{
 			get => player;
@@ -33,7 +35,25 @@ namespace BlackJack
 					player.PropertyChanged -= Player_PropertyChanged;
 				player = value;
 				if (player != null)
+				{
 					player.PropertyChanged += Player_PropertyChanged;
+					Balance.Content = player.Balance;
+					Insurance.Content = player.Insurance == null ? "----" : player.Insurance.ToString();
+					Stake.Content = player.Stake;
+				}
+			}
+		}
+
+		public bool HighLight
+		{
+			get => highLight;
+			set
+			{
+				highLight = value;
+				if (highLight)
+					PlayerGrid.Background = new SolidColorBrush(Colors.GreenYellow);
+				else
+					PlayerGrid.Background = new SolidColorBrush(Colors.SpringGreen);
 			}
 		}
 
