@@ -17,7 +17,7 @@ namespace BlackJackClient
 			game.GamerBoom += OnGamerBoom;
 			game.Finish += OnFinish;
 			while (true)
-				game.NextTurn();
+				game.NextTurnAsync().Wait();
 		}
 
 		static void OnNewTurnStart(object o, EventArgs e)
@@ -65,7 +65,7 @@ namespace BlackJackClient
 
 		class Interaction : IGameInteraction
 		{
-			public int Bet(int playerId)
+			public async Task<int> Bet(int playerId)
 			{
 				Console.WriteLine($"{playerId}号玩家请输入赌金：");
 				int bet = int.Parse(Console.ReadLine());
@@ -73,21 +73,21 @@ namespace BlackJackClient
 				return bet;
 			}
 
-			public bool WantInsurance(int playerId)
+			public async Task<bool> WantInsurance(int playerId)
 			{
 				Console.WriteLine($"{playerId}号玩家是否需要购买保险金(Y/N)：");
 				string input = Console.ReadLine();
 				return input.Contains("Y") || input.Contains("y");
 			}
 
-			public bool WantToDouble(int playerId)
+			public async Task<bool> WantToDouble(int playerId)
 			{
 				Console.WriteLine($"{playerId}号玩家是否需要加倍(Y/N)：");
 				string input = Console.ReadLine();
 				return input.Contains("Y") || input.Contains("y");
 			}
 
-			public bool WantToHitMe(int playerId)
+			public async Task<bool> WantToHitMe(int playerId)
 			{
 				Console.WriteLine($"{playerId}号玩家：1.要牌  2.停牌");
 				string input = Console.ReadLine();

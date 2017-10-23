@@ -67,7 +67,7 @@ namespace BlackJackLib
 		/// <summary>
 		/// 开始下一轮赌局
 		/// </summary>
-		public void NextTurn()
+		public async System.Threading.Tasks.Task NextTurnAsync()
 		{
 			// 每局开始的初始化
 			deck.Shuffle();
@@ -76,11 +76,11 @@ namespace BlackJackLib
 
 			if (NewTurnStart != null)
 				NewTurnStart.Invoke(this, null);
-			
+
 			// 玩家下注
 			foreach (var player in players)
 			{
-				int bet = interaction.Bet(player.Id);
+				int bet = await interaction.Bet(player.Id);
 				player.Stake = bet;
 				player.Balance -= bet;
 			}
@@ -102,7 +102,7 @@ namespace BlackJackLib
 				// 询问玩家是否买保险金
 				foreach (var player in players)
 				{
-					if (interaction.WantInsurance(player.Id))
+					if (await interaction.WantInsurance(player.Id))
 						player.BuyInsurance();
 				}
 				//若此时庄家暗T，构成BlackJack，亮牌
@@ -128,11 +128,11 @@ namespace BlackJackLib
 						else // 买了保险
 							Draw(player); // 按平局处理
 					}
-					
+
 			// 询问剩余玩家是否double
 			foreach (var player in players.Where(player => player.Active))
 			{
-				if (interaction.WantToDouble(player.Id))
+				if (await interaction.WantToDouble(player.Id))
 				{
 					player.Double();
 					player.AchieveCard(deck.DrawACard());
@@ -151,7 +151,7 @@ namespace BlackJackLib
 				do
 				{
 					// 拿牌
-					if (interaction.WantToHitMe(player.Id))
+					if (await interaction.WantToHitMe(player.Id))
 					{
 						player.AchieveCard(deck.DrawACard());
 						// 玩家爆了，则庄家直接赢
@@ -176,18 +176,18 @@ namespace BlackJackLib
 			while (dealer.SumPoint < 17 && dealer.HandCards.Count < 5)    //最多只能摸五张牌
 				dealer.AchieveCard(deck.DrawACard());
 
-            // 结算
-            // 若庄家爆了
-            if (dealer.SumPoint > 21)
-            {
+			// 结算
+			// 若庄家爆了
+			if (dealer.SumPoint > 21)
+			{
 				GamerBoom(this, dealer);
-                foreach (var player in players.Where(player => !player.Finish))
-                    PlayerWin(player); // 玩家赢
-            }
-            else // 否则比大小
-            {
-                foreach (var player in players.Where(player => !player.Finish))
-                {
+				foreach (var player in players.Where(player => !player.Finish))
+					PlayerWin(player); // 玩家赢
+			}
+			else // 否则比大小
+			{
+				foreach (var player in players.Where(player => !player.Finish))
+				{
 					// 优先点数大的赢
 					if (player.SumPoint > dealer.SumPoint)
 						PlayerWin(player);
@@ -202,7 +202,7 @@ namespace BlackJackLib
 					else
 						Draw(player);
 				}
-            }
+			}
 		}
 
 		/// <summary>
