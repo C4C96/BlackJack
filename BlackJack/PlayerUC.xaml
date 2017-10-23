@@ -6,7 +6,35 @@
              xmlns:local="clr-namespace:BlackJack"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
+    <Grid Background="SpringGreen" Name="playerGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Label
+            Name="balance"
+            Grid.Row="0"
+            VerticalAlignment="Center"
+            Content="玩家余额:"
+            FontSize="30">
+        </Label>
+
+        <Label
+            Name="insurance"
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Content="保险金："
+            FontSize="30">
+        </Label>
+
+        <Label
+            Name="stake"
+            Grid.Row="2"
+            VerticalAlignment="Center"
+            Content="赌金："
+            FontSize="30"></Label>
+        
     </Grid>
 </UserControl>
