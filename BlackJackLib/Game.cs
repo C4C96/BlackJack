@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlackJackLib
 {
@@ -67,7 +68,7 @@ namespace BlackJackLib
 		/// <summary>
 		/// 开始下一轮赌局
 		/// </summary>
-		public async System.Threading.Tasks.Task NextTurnAsync()
+		public async Task NextTurnAsync()
 		{
 			// 每局开始的初始化
 			deck.Shuffle();

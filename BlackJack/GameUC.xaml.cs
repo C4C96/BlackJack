@@ -141,25 +141,25 @@ namespace BlackJack
 			return new Tuple<double, double>(x, y);
 		}
 
-		public int Bet(int playerId)
+		public async Task<int> Bet(int playerId)
 		{
 			// TODO
 			return 500;
 		}
 
-		public bool WantInsurance(int playerId)
+		public async Task<bool> WantInsurance(int playerId)
 		{
 			// TODO
 			return false;
 		}
 
-		public bool WantToDouble(int playerId)
+		public async Task<bool> WantToDouble(int playerId)
 		{
 			// TODO
 			return false;
 		}
 
-		public bool WantToHitMe(int playerId)
+		public async Task<bool> WantToHitMe(int playerId)
 		{
 			// TODO
 			return true;
