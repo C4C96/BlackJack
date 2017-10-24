@@ -25,7 +25,8 @@ namespace BlackJack
 	{
 		private Card card;
 
-		private bool isRotating;
+		public Func<Task> BeforeReverse;
+		public Action AfterReverse;
 
 		public Card Card
 		{
@@ -41,11 +42,6 @@ namespace BlackJack
 				RefreshBack();
 				card.PropertyChanged += Card_PropertyChanged;
 			}
-		}
-
-		public bool IsRotating
-		{
-			get => isRotating;
 		}
 
 		public CardUC()
@@ -75,7 +71,7 @@ namespace BlackJack
 			switch (e.PropertyName)
 			{
 				case "Seen_Blind":
-					ReverseCard();
+					ReverseCardAsync();
 					break;
 				case "Suit":
 				case "Rank":
@@ -88,21 +84,29 @@ namespace BlackJack
 		/// 翻转卡牌（带动画）
 		/// </summary>
 		/// <param name="seen_blind">true表示翻到正面，false表示翻到反面</param>
-		private void ReverseCard()
+		private async Task ReverseCardAsync()
 		{
-			isRotating = true;
+			if (BeforeReverse != null)
+				await BeforeReverse();
 			DoubleAnimation toZeroAnim = new DoubleAnimation(0.0, TimeSpan.FromSeconds(0.75));
 			DoubleAnimation toOrignalAnim = new DoubleAnimation(Width, TimeSpan.FromSeconds(0.75));
-			bool tmp = true;
+			bool toZeroRunning = true;
 			toZeroAnim.Completed += (o, e) =>
 			{
-				if (!tmp) return;
-				tmp = false;
+				if (!toZeroRunning) return;
+				toZeroRunning = false;
 				RefreshBack();
 				CoverImage.BeginAnimation(WidthProperty, toOrignalAnim, HandoffBehavior.Compose);
 				BackImage.BeginAnimation(WidthProperty, toOrignalAnim, HandoffBehavior.Compose);
 			};
-			toOrignalAnim.Completed += (o, e) => isRotating = false;
+			bool toOrignalRunning = true;
+			toOrignalAnim.Completed += (o, e) =>
+			{
+				if (!toOrignalRunning) return;
+				toOrignalRunning = false;
+				if (AfterReverse != null)
+					AfterReverse();
+			};
 			CoverImage.Width = BackImage.Width = Width;
 			CoverImage.BeginAnimation(WidthProperty, toZeroAnim, HandoffBehavior.Compose);
 			BackImage.BeginAnimation(WidthProperty, toZeroAnim, HandoffBehavior.Compose);

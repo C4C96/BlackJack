@@ -29,6 +29,8 @@ namespace BlackJack
 		private PlayerUC[] playerUCGroup = new PlayerUC[Game.MAX_PLAYER];
 
 		private List<CardUC> cardUCs = new List<CardUC>();
+		
+		private SemaphoreSlim semaphore = new SemaphoreSlim(1); // 牌的动画的信号量，同一时间只有一张牌能进行动画
 
 		public Game Game
 		{
@@ -56,7 +58,9 @@ namespace BlackJack
 
 					int i = 0;
 					foreach (var player in game.Players)
+					{
 						playerUCGroup[i++].Player = player;
+					}
 					DealerUC.Dealer = game.Dealer;
 				}				
 			}
@@ -98,51 +102,41 @@ namespace BlackJack
 		}
 
 		private async void Game_AchieveCard(object sender, Gamer gamer, Card card)
-		{
-			bool completed = false;
-
-			CardUC cardUC = new CardUC();
+		{ 
+			CardUC cardUC = new CardUC()
+			{
+				Card = card,
+				Width = CardTemp.ActualWidth,
+				Height = CardTemp.ActualHeight,
+				BeforeReverse = async () => await semaphore.WaitAsync(),
+				AfterReverse = () => semaphore.Release(),
+			};
 			Canvas.Children.Add(cardUC);
 			cardUCs.Add(cardUC);
 			Canvas.SetLeft(cardUC, Canvas.GetLeft(CardTemp));
 			Canvas.SetTop(cardUC, Canvas.GetTop(CardTemp));
-			cardUC.Width = CardTemp.ActualWidth;
-			cardUC.Height = CardTemp.ActualHeight;
 
-			var position = GetNewCardPos(gamer);
+			await semaphore.WaitAsync();
+
+			var position = GetNewCardPos(gamer, card);
 			DoubleAnimation xMoveAnim = new DoubleAnimation(position.Item1, TimeSpan.FromSeconds(1));
 			DoubleAnimation yMoveAnim = new DoubleAnimation(position.Item2, TimeSpan.FromSeconds(1));
-			yMoveAnim.Completed += (o, e) =>
-			{
-				if (card.Seen_Blind)
-				{
-					card.Seen_Blind = false;
-					cardUC.Card = card;
-					card.Seen_Blind = true;
-				}
-				else
-					cardUC.Card = card;
-				completed = true;
-			};
+			yMoveAnim.Completed += (o, e) => semaphore.Release();
 			cardUC.BeginAnimation(Canvas.LeftProperty, xMoveAnim);
 			cardUC.BeginAnimation(Canvas.TopProperty, yMoveAnim);
-			await Task.Factory.StartNew(() => { while (!completed || cardUC.IsRotating) ; });
 		}
 
-		private Tuple<Double, Double> GetNewCardPos(Gamer gamer)
+		private Tuple<Double, Double> GetNewCardPos(Gamer gamer, Card card)
 		{
-			int count = gamer.HandCards.Count;
+			int index = gamer.HandCards.IndexOf(card);
 			Rectangle cardArea;
 			if (gamer is Dealer)
 				cardArea = DealerCardArea;	
 			else
-			{
-				int index = (gamer as Player).Id - 1;
-				cardArea = playerCardAreaGroup[index];
-			}
+				cardArea = playerCardAreaGroup[(gamer as Player).Id - 1];
 			double x = Canvas.GetLeft(cardArea);
 			double y = Canvas.GetTop(cardArea);
-			x += (count - 1) * (cardArea.Width - CardTemp.ActualWidth) / 4.0;
+			x += index * (cardArea.Width - CardTemp.ActualWidth) / 4.0;
 			return new Tuple<double, double>(x, y);
 		}
 
@@ -150,7 +144,8 @@ namespace BlackJack
 		{
 			int? result = null;
 			playerUCGroup[playerId - 1].HighLight = true;
-			BetGrid.Visibility = Visibility.Visible;			
+			BetGrid.Visibility = Visibility.Visible;
+			BetTextBox.Focus();
 			RoutedEventHandler handler = (o, e) => 
 			{
 				int input = 0;

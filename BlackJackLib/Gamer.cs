@@ -61,9 +61,15 @@ namespace BlackJackLib
 		/// <param name="card">玩家要获得的牌</param>
 		public void AchieveCard(Card card)   
         {
+			// 发之前是暗的
+			bool seen_blind = card.Seen_Blind;
+			card.Seen_Blind = false;
             handCards.Add(card);
 			if (AchieveCardEvent != null)
 				AchieveCardEvent.Invoke(this, card);
+			// 如果发的牌是明牌，发完后就亮
+			if (seen_blind)
+				card.Seen_Blind = true;
         }
 
 		public List<Card> HandCards
