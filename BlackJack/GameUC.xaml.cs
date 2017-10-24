@@ -86,7 +86,7 @@ namespace BlackJack
 			NewTurnButton.Visibility = Visibility.Visible;
 		}
 
-		private void Game_GamerBoom(object sender, Gamer e)
+		private async Task Game_GamerBoom(object sender, Gamer e)
 		{
 			// TODO
 		}
