@@ -18,7 +18,7 @@
                               Canvas.Left="200" Canvas.Top="150" />
 
                 <!-- Players -->
-                
+
                 <Rectangle  
                     Name="PlayerCardArea3"
                     StrokeThickness="8"
@@ -90,7 +90,6 @@
                     Height="150" 
                     Canvas.Left="1620" 
                     Canvas.Top="1000" />
-
                 <!-- Dealer -->
 
                 <Rectangle

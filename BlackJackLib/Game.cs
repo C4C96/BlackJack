@@ -20,9 +20,11 @@ namespace BlackJackLib
 		// 用于反馈的事件
 		public event EventHandler NewTurnStart;
 		public event Action<object, Gamer, Card> AchieveCard;
-		public event Func<object, Gamer, Task> GamerBoom;
-		public event Func<object, Gamer, Task> GamerBlackJack;
+		public event EventHandler<Gamer> GamerBoom;
+		public event EventHandler<Gamer> GamerBlackJack;
+		public event EventHandler<Gamer> GamerFiveDragon; // if (GamerFiveDragon != null) GamerFiveDragon.Invoke(this, gamer);
 		public event FinishHandler Finish;
+		public event EventHandler TurnFinish;
 
 		private Dealer dealer;			// 庄家
 		private List<Player> players;	// 闲家
@@ -118,19 +120,19 @@ namespace BlackJackLib
 					if (player.HasBlackJack)
 					{
 						if (GamerBlackJack != null)
-							await GamerBlackJack.Invoke(this, player);
+							GamerBlackJack.Invoke(this, player);
 						PlayerWin(player, 1.5f); // 玩家以1.5倍率赢
 					}
 			}
 			else
 			{
 				if (GamerBlackJack != null)
-					await GamerBlackJack.Invoke(this, dealer);
+					GamerBlackJack.Invoke(this, dealer);
 				foreach (var player in players)
 					if (player.HasBlackJack) // 都有BlackJack
 					{
 						if (GamerBlackJack != null)
-							await GamerBlackJack.Invoke(this, player);
+							GamerBlackJack.Invoke(this, player);
 						Draw(player); // 平手
 					}
 					else // 庄家有BlackJack，玩家没有
@@ -152,7 +154,7 @@ namespace BlackJackLib
 					if (player.SumPoint > 21)
 					{
 						if (GamerBoom != null)
-							await GamerBoom.Invoke(this, player);
+							GamerBoom.Invoke(this, player);
 						DealerWin(player);
 					}
 				}
@@ -171,7 +173,7 @@ namespace BlackJackLib
 						if (player.SumPoint > 21)
 						{
 							if (GamerBoom != null)
-								await GamerBoom.Invoke(this, player);
+								GamerBoom.Invoke(this, player);
 							DealerWin(player);
 						}
 					}
@@ -185,7 +187,11 @@ namespace BlackJackLib
 			// 若还有玩家未结算，则庄家持续拿牌直到点数不小于17
 			dealer_BlindCard.Seen_Blind = true;
 			if (players.Where(player => !player.Finish).Count() == 0)
+			{
+				if (TurnFinish != null)
+					TurnFinish.Invoke(this, null);
 				return;
+			}
 			while (dealer.SumPoint < 17 && dealer.HandCards.Count < 5)    //最多只能摸五张牌
 				dealer.AchieveCard(deck.DrawACard());
 
@@ -194,7 +200,7 @@ namespace BlackJackLib
 			if (dealer.SumPoint > 21)
 			{
 				if (GamerBoom != null)
-					await GamerBoom(this, dealer);
+					GamerBoom(this, dealer);
 				foreach (var player in players.Where(player => !player.Finish))
 					PlayerWin(player); // 玩家赢
 			}
@@ -217,6 +223,8 @@ namespace BlackJackLib
 						Draw(player);
 				}
 			}
+			if (TurnFinish != null)
+				TurnFinish.Invoke(this, null);
 		}
 
 		/// <summary>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,8 +30,9 @@ namespace BlackJack
 		private PlayerUC[] playerUCGroup = new PlayerUC[Game.MAX_PLAYER];
 
 		private List<CardUC> cardUCs = new List<CardUC>();
-		
-		private SemaphoreSlim semaphore = new SemaphoreSlim(1); // 牌的动画的信号量，同一时间只有一张牌能进行动画
+		private List<Image> fxs = new List<Image>(); // 特效的集合
+
+		private SemaphoreSlim semaphore = new SemaphoreSlim(1); // 动画的信号量，同一时间只有一个动画
 
 		public Game Game
 		{
@@ -42,7 +44,9 @@ namespace BlackJack
 					game.AchieveCard -= Game_AchieveCard;
 					game.NewTurnStart -= Game_NewTurnStart;
 					game.GamerBoom -= Game_GamerBoom;
+					game.GamerBlackJack -= Game_GamerBlackJack;
 					game.Finish -= Game_Finish;
+					game.TurnFinish -= Game_TurnFinish;
 				}
 				foreach (var playerUC in playerUCGroup)
 					playerUC.Player = null;
@@ -54,7 +58,9 @@ namespace BlackJack
 					game.AchieveCard += Game_AchieveCard;
 					game.NewTurnStart += Game_NewTurnStart;
 					game.GamerBoom += Game_GamerBoom;
+					game.GamerBlackJack += Game_GamerBlackJack;
 					game.Finish += Game_Finish;
+					game.TurnFinish += Game_TurnFinish;
 
 					int i = 0;
 					foreach (var player in game.Players)
@@ -64,6 +70,14 @@ namespace BlackJack
 					DealerUC.Dealer = game.Dealer;
 				}				
 			}
+		}
+
+		private async void Game_TurnFinish(object sender, EventArgs e)
+		{
+			await semaphore.WaitAsync();
+			semaphore.Release();
+
+			NewTurnButton.Visibility = Visibility.Visible;
 		}
 
 		public GameUC()
@@ -81,23 +95,74 @@ namespace BlackJack
 			playerUCGroup[4] = PlayerUC5;
 		}
 
-		private void Game_Finish(object sender, Player player, bool? win)
+		private async void Game_Finish(object sender, Player player, bool? win)
 		{
-			NewTurnButton.Visibility = Visibility.Visible;
+			Rectangle cardArea = playerCardAreaGroup[player.Id - 1];
+			Uri uri;
+			if (win == null)
+				uri = new Uri(@"./Images/Draw.png", UriKind.Relative);
+			else if (win.Value)
+				uri = new Uri(@"./Images/Win.png", UriKind.Relative);
+			else
+				uri = new Uri(@"./Images/Lose.png", UriKind.Relative);
+			await ShowImageOnCardArea(cardArea, uri);
 		}
 
-		private async Task Game_GamerBoom(object sender, Gamer e)
+		private async void Game_GamerBoom(object sender, Gamer gamer)
 		{
-			// TODO
+			Rectangle cardArea = gamer is Dealer ? DealerCardArea : playerCardAreaGroup[(gamer as Player).Id - 1];
+			await ShowImageOnCardArea(cardArea, new Uri(@"./Images/boom.png", UriKind.Relative));
+		}
+
+		private async void Game_GamerBlackJack(object sender, Gamer gamer)
+		{
+			Rectangle cardArea = gamer is Dealer ? DealerCardArea : playerCardAreaGroup[(gamer as Player).Id - 1];
+			await ShowImageOnCardArea(cardArea, new Uri(@"./Images/BlackJack.png", UriKind.Relative));
+		}
+
+		private async Task ShowImageOnCardArea(Rectangle cardArea, Uri imageUri)
+		{
+			Image image = new Image()
+			{
+				Source = new BitmapImage(imageUri),
+				Width = 0,
+				Height = 0,
+			};
+			Canvas.Children.Add(image);
+			Canvas.SetLeft(image, Canvas.GetLeft(cardArea) + cardArea.Width / 2.0);
+			Canvas.SetTop(image, Canvas.GetTop(cardArea) + cardArea.Height);
+			fxs.Add(image);
+
+			TimeSpan time = TimeSpan.FromSeconds(0.3);
+			DoubleAnimation leftAnim = new DoubleAnimation(Canvas.GetLeft(cardArea), time);
+			DoubleAnimation topAnim = new DoubleAnimation(Canvas.GetTop(cardArea), time);
+			DoubleAnimation widthAnim = new DoubleAnimation(cardArea.Width, time);
+			DoubleAnimation heightAnim = new DoubleAnimation(cardArea.Height, time);
+			heightAnim.Completed += (o, e) => semaphore.Release();
+			await semaphore.WaitAsync();
+
+			image.BeginAnimation(Canvas.LeftProperty, leftAnim);
+			image.BeginAnimation(Canvas.TopProperty, topAnim);
+			image.BeginAnimation(WidthProperty, widthAnim);
+			image.BeginAnimation(HeightProperty, heightAnim);
 		}
 
 		private void Game_NewTurnStart(object sender, EventArgs e)
 		{
-			DoubleAnimation removeAnim = new DoubleAnimation(-CardTemp.ActualWidth, TimeSpan.FromSeconds(1));
+			DoubleAnimation removeAnim = new DoubleAnimation(-600, TimeSpan.FromSeconds(1));
 			foreach (var cardUC in cardUCs)
 			{
-				removeAnim.Completed += (o, ev) => Canvas.Children.Remove(cardUC);
+				removeAnim.Completed += (o, ev) => 
+				{
+					cardUC.Card = null;
+					Canvas.Children.Remove(cardUC);
+				};
 				cardUC.BeginAnimation(Canvas.LeftProperty, removeAnim);
+			}
+			foreach (var image in fxs)
+			{
+				removeAnim.Completed += (o, ev) => Canvas.Children.Remove(image);
+				image.BeginAnimation(Canvas.LeftProperty, removeAnim);
 			}
 		}
 
@@ -143,6 +208,10 @@ namespace BlackJack
 		public async Task<int> Bet(int playerId)
 		{
 			int? result = null;
+
+			await semaphore.WaitAsync();
+			semaphore.Release();
+
 			playerUCGroup[playerId - 1].HighLight = true;
 			BetGrid.Visibility = Visibility.Visible;
 			BetTextBox.Focus();
@@ -163,7 +232,10 @@ namespace BlackJack
 					BetTextBox.Text = "";
 			};
 			BetButton.Click += handler;
-			await Task.Factory.StartNew(() => { while (result == null) ; });
+			do
+			{
+				await new ButtonAwaiter(BetButton);
+			} while (result == null);
 			BetButton.Click -= handler;
 			BetGrid.Visibility = Visibility.Collapsed;
 			playerUCGroup[playerId - 1].HighLight = false;
@@ -173,13 +245,17 @@ namespace BlackJack
 		public async Task<bool> WantInsurance(int playerId)
 		{
 			bool? result = null;
+
+			await semaphore.WaitAsync();
+			semaphore.Release();
+
 			playerUCGroup[playerId - 1].HighLight = true;
 			InsuranceGrid.Visibility = Visibility.Visible;
 			RoutedEventHandler positiveHandler = (o, e) => result = true;
 			RoutedEventHandler negativeHandler = (o, e) => result = false;
 			InsuranceButton.Click += positiveHandler;
 			DontInsuranceButton.Click += negativeHandler;
-			await Task.Factory.StartNew(() => { while (result == null) ; });
+			await new ButtonAwaiter(InsuranceButton, DontInsuranceButton);
 			InsuranceButton.Click -= positiveHandler;
 			DontInsuranceButton.Click -= negativeHandler;
 			InsuranceGrid.Visibility = Visibility.Collapsed;
@@ -190,13 +266,17 @@ namespace BlackJack
 		public async Task<bool> WantToDouble(int playerId)
 		{
 			bool? result = null;
+
+			await semaphore.WaitAsync();
+			semaphore.Release();
+
 			playerUCGroup[playerId - 1].HighLight = true;
 			DoubleGrid.Visibility = Visibility.Visible;
 			RoutedEventHandler positiveHandler = (o, e) => result = true;
 			RoutedEventHandler negativeHandler = (o, e) => result = false;
 			DoubleButton.Click += positiveHandler;
 			DontDoubleButton.Click += negativeHandler;
-			await Task.Factory.StartNew(() => { while (result == null) ; });
+			await new ButtonAwaiter(DoubleButton, DontDoubleButton);
 			DoubleButton.Click -= positiveHandler;
 			DontDoubleButton.Click -= negativeHandler;
 			DoubleGrid.Visibility = Visibility.Collapsed;
@@ -207,13 +287,17 @@ namespace BlackJack
 		public async Task<bool> WantToHitMe(int playerId)
 		{
 			bool? result = null;
+
+			await semaphore.WaitAsync();
+			semaphore.Release();
+
 			playerUCGroup[playerId - 1].HighLight = true;
 			HitMeGrid.Visibility = Visibility.Visible;
 			RoutedEventHandler positiveHandler = (o, e) => result = true;
 			RoutedEventHandler negativeHandler = (o, e) => result = false;
 			HitMeButton.Click += positiveHandler;
 			StandButton.Click += negativeHandler;
-			await Task.Factory.StartNew(() => { while (result == null) ; });
+			await new ButtonAwaiter(HitMeButton, StandButton);
 			HitMeButton.Click -= positiveHandler;
 			StandButton.Click -= negativeHandler;
 			HitMeGrid.Visibility = Visibility.Collapsed;
@@ -226,5 +310,45 @@ namespace BlackJack
 			game.NextTurnAsync();
 			NewTurnButton.Visibility = Visibility.Collapsed;
 		}
+
+		/// <summary>
+		/// 用于异步等待按钮被按的类
+		/// </summary>
+		public class ButtonAwaiter : INotifyCompletion
+		{
+			public Button[] Buttons { get; set; }
+
+			public void OnCompleted(Action continuation)
+			{
+				RoutedEventHandler[] h = new RoutedEventHandler[Buttons.Length];
+				for (int i = 0; i < Buttons.Length; i++)
+				{
+					h[i] = (o, e) =>
+					{
+						for (int j = 0; j < Buttons.Length; j++)
+							Buttons[j].Click -= h[j];
+						continuation();
+					};
+					Buttons[i].Click += h[i];
+				}
+			}
+
+			public bool IsCompleted
+			{ get => false; }
+
+			public void GetResult()
+			{ }
+
+			public ButtonAwaiter(params Button[] buttons)
+			{
+				Buttons = buttons;
+			}
+
+			public ButtonAwaiter GetAwaiter()
+			{
+				return this;
+			}
+		}
+
 	}
 }

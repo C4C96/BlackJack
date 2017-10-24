@@ -202,5 +202,16 @@
   <ItemGroup>
     <Resource Include="Images\Table\tablebackground.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\boom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BlackJack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Draw.png" />
+    <Resource Include="Images\Lose.png" />
+    <Resource Include="Images\Win.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -37,10 +37,13 @@ namespace BlackJack
 					card.PropertyChanged -= Card_PropertyChanged;
 				card = value;
 
-				DataContext = card;
-				RefreshCover();
-				RefreshBack();
-				card.PropertyChanged += Card_PropertyChanged;
+				if (card != null)
+				{
+					DataContext = card;
+					RefreshCover();
+					RefreshBack();
+					card.PropertyChanged += Card_PropertyChanged;
+				}
 			}
 		}
 
