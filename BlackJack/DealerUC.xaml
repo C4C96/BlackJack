@@ -7,12 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid Background="SpringGreen" Name="dealerGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
 
         <Label
             VerticalAlignment="Center"
             Content="庄家余额:"
             FontSize="30" />
         <Label Name="Balance"
+               VerticalAlignment="Center"
+               Content="----"
+               FontSize="30"
+               Margin="130,0,0,0"/>
+
+        <Label
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Content="手牌点数:"
+            FontSize="30" />
+        <Label Name="total"
+               Grid.Row="1"
                VerticalAlignment="Center"
                Content="----"
                FontSize="30"

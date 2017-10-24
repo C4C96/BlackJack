@@ -169,6 +169,14 @@ namespace BlackJackLib
 					if (await interaction.WantToHitMe(player.Id))
 					{
 						player.AchieveCard(deck.DrawACard());
+                        //如果玩家五小龙，则该玩家直接赢
+                        if(player.HandCards.Count == 5 && player.SumPoint <= 21)
+                        {
+                            if (GamerFiveDragon != null)
+                                GamerFiveDragon.Invoke(this,player);
+                            PlayerWin(player);
+                        }
+
 						// 玩家爆了，则庄家直接赢
 						if (player.SumPoint > 21)
 						{
