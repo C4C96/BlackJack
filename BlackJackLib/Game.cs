@@ -22,7 +22,7 @@ namespace BlackJackLib
 		public event Action<object, Gamer, Card> AchieveCard;
 		public event EventHandler<Gamer> GamerBoom;
 		public event EventHandler<Gamer> GamerBlackJack;
-		public event EventHandler<Gamer> GamerFiveDragon; // if (GamerFiveDragon != null) GamerFiveDragon.Invoke(this, gamer);
+		public event EventHandler<Gamer> GamerFiveDragon;
 		public event FinishHandler Finish;
 		public event EventHandler TurnFinish;
 
@@ -193,7 +193,8 @@ namespace BlackJackLib
 
 			// 庄家亮暗牌
 			// 若还有玩家未结算，则庄家持续拿牌直到点数不小于17
-			dealer_BlindCard.Seen_Blind = true;
+			if (!dealer_BlindCard.Seen_Blind)
+				dealer_BlindCard.Seen_Blind = true;
 			if (players.Where(player => !player.Finish).Count() == 0)
 			{
 				if (TurnFinish != null)

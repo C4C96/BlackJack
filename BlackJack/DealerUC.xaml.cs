@@ -29,14 +29,37 @@ namespace BlackJack
 			set
 			{
 				if (dealer != null)
+				{
 					dealer.PropertyChanged -= Dealer_PropertyChanged;
+					dealer.AchieveCardEvent -= Dealer_AchieveCardEvent;
+				}
 				dealer = value;
 				if (dealer != null)
 				{
 					dealer.PropertyChanged += Dealer_PropertyChanged;
+					dealer.AchieveCardEvent += Dealer_AchieveCardEvent;
 					Balance.Content = dealer.Balance;
+					RefreshSumPoint();
 				}
 			}
+		}
+
+		private void Dealer_AchieveCardEvent(object sender, Card card)
+		{
+			RefreshSumPoint();
+			card.PropertyChanged += (o, e) => 
+			{
+				if (e.PropertyName == "Seen_Blind")
+					RefreshSumPoint();
+			};
+		}
+
+		private void RefreshSumPoint()
+		{
+			if (dealer.HandCards.Where((card) => !card.Seen_Blind).Count() > 0)
+				SumPoint.Content = "----";
+			else
+				SumPoint.Content = dealer.SumPoint;
 		}
 
 		private void Dealer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

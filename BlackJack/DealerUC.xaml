@@ -27,7 +27,7 @@
             VerticalAlignment="Center"
             Content="手牌点数:"
             FontSize="30" />
-        <Label Name="total"
+        <Label Name="SumPoint"
                Grid.Row="1"
                VerticalAlignment="Center"
                Content="----"

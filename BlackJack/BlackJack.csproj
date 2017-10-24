@@ -213,5 +213,8 @@
     <Resource Include="Images\Lose.png" />
     <Resource Include="Images\Win.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\FiveDragon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

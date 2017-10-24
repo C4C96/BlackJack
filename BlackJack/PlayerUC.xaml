@@ -54,7 +54,7 @@
             FontSize="30"/>
         <Label
             Grid.Row="3"
-            Name="total"
+            Name="SumPoint"
             VerticalAlignment="Center"
             Content="----"
             FontSize="30"

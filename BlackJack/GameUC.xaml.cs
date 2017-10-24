@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -45,6 +46,7 @@ namespace BlackJack
 					game.NewTurnStart -= Game_NewTurnStart;
 					game.GamerBoom -= Game_GamerBoom;
 					game.GamerBlackJack -= Game_GamerBlackJack;
+					game.GamerFiveDragon -= Game_GamerFiveDragon;
 					game.Finish -= Game_Finish;
 					game.TurnFinish -= Game_TurnFinish;
 				}
@@ -59,6 +61,7 @@ namespace BlackJack
 					game.NewTurnStart += Game_NewTurnStart;
 					game.GamerBoom += Game_GamerBoom;
 					game.GamerBlackJack += Game_GamerBlackJack;
+					game.GamerFiveDragon += Game_GamerFiveDragon;
 					game.Finish += Game_Finish;
 					game.TurnFinish += Game_TurnFinish;
 
@@ -93,6 +96,12 @@ namespace BlackJack
 			playerUCGroup[2] = PlayerUC3;
 			playerUCGroup[3] = PlayerUC4;
 			playerUCGroup[4] = PlayerUC5;
+
+			BetTextBox.KeyDown += (o, e) => 
+			{
+				if (e.Key == Key.Enter)
+					BetButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+			};
 		}
 
 		private async void Game_Finish(object sender, Player player, bool? win)
@@ -118,6 +127,12 @@ namespace BlackJack
 		{
 			Rectangle cardArea = gamer is Dealer ? DealerCardArea : playerCardAreaGroup[(gamer as Player).Id - 1];
 			await ShowImageOnCardArea(cardArea, new Uri(@"./Images/BlackJack.png", UriKind.Relative));
+		}
+
+		private async void Game_GamerFiveDragon(object sender, Gamer gamer)
+		{
+			Rectangle cardArea = gamer is Dealer ? DealerCardArea : playerCardAreaGroup[(gamer as Player).Id - 1];
+			await ShowImageOnCardArea(cardArea, new Uri(@"./Images/FiveDragon.png", UriKind.Relative));
 		}
 
 		private async Task ShowImageOnCardArea(Rectangle cardArea, Uri imageUri)

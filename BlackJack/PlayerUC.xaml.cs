@@ -32,16 +32,26 @@ namespace BlackJack
 			set
 			{
 				if (player != null)
+				{
 					player.PropertyChanged -= Player_PropertyChanged;
+					player.AchieveCardEvent -= Player_AchieveCardEvent;
+				}
 				player = value;
 				if (player != null)
 				{
 					player.PropertyChanged += Player_PropertyChanged;
+					player.AchieveCardEvent += Player_AchieveCardEvent;
 					Balance.Content = player.Balance;
 					Insurance.Content = player.Insurance == null ? "----" : player.Insurance.ToString();
 					Stake.Content = player.Stake;
+					SumPoint.Content = player.SumPoint;
 				}
 			}
+		}
+
+		private void Player_AchieveCardEvent(object sender, Card e)
+		{
+			SumPoint.Content = player.SumPoint;
 		}
 
 		public bool HighLight
