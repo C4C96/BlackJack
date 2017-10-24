@@ -14,14 +14,14 @@ namespace BlackJackLib
 		public const int MIN_PLAYER = 1;
 
 		private IGameInteraction interaction; // 用于从用户获取信息的接口实例
-
-		public delegate void AchieveCardHandler(object sender, Gamer gamer, Card card);
+		
 		public delegate void FinishHandler(object sender, Player player, bool? win);
 
 		// 用于反馈的事件
 		public event EventHandler NewTurnStart;
-		public event AchieveCardHandler AchieveCard;
-		public event EventHandler<Gamer> GamerBoom;
+		public event Action<object, Gamer, Card> AchieveCard;
+		public event Func<object, Gamer, Task> GamerBoom;
+		public event Func<object, Gamer, Task> GamerBlackJack;
 		public event FinishHandler Finish;
 
 		private Dealer dealer;			// 庄家
@@ -116,12 +116,23 @@ namespace BlackJackLib
 				foreach (var player in players)
 					// 玩家BlackJack，庄家不是
 					if (player.HasBlackJack)
+					{
+						if (GamerBlackJack != null)
+							await GamerBlackJack.Invoke(this, player);
 						PlayerWin(player, 1.5f); // 玩家以1.5倍率赢
+					}
 			}
 			else
+			{
+				if (GamerBlackJack != null)
+					await GamerBlackJack.Invoke(this, dealer);
 				foreach (var player in players)
 					if (player.HasBlackJack) // 都有BlackJack
+					{
+						if (GamerBlackJack != null)
+							await GamerBlackJack.Invoke(this, player);
 						Draw(player); // 平手
+					}
 					else // 庄家有BlackJack，玩家没有
 					{
 						if (player.Insurance == null) // 没买保险
@@ -129,6 +140,7 @@ namespace BlackJackLib
 						else // 买了保险
 							Draw(player); // 按平局处理
 					}
+			}
 
 			// 询问剩余玩家是否double
 			foreach (var player in players.Where(player => player.Active))
@@ -140,7 +152,7 @@ namespace BlackJackLib
 					if (player.SumPoint > 21)
 					{
 						if (GamerBoom != null)
-							GamerBoom.Invoke(this, player);
+							await GamerBoom.Invoke(this, player);
 						DealerWin(player);
 					}
 				}
@@ -159,7 +171,7 @@ namespace BlackJackLib
 						if (player.SumPoint > 21)
 						{
 							if (GamerBoom != null)
-								GamerBoom.Invoke(this, player);
+								await GamerBoom.Invoke(this, player);
 							DealerWin(player);
 						}
 					}
@@ -181,7 +193,8 @@ namespace BlackJackLib
 			// 若庄家爆了
 			if (dealer.SumPoint > 21)
 			{
-				GamerBoom(this, dealer);
+				if (GamerBoom != null)
+					await GamerBoom(this, dealer);
 				foreach (var player in players.Where(player => !player.Finish))
 					PlayerWin(player); // 玩家赢
 			}
